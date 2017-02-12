@@ -1,0 +1,108 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} Nathan {% endblock %}
+
+{%block page_content %}
+<div class="page-header">
+	<h1>Wicomico County Weather </h1>
+</div>
+
+<div class="container">
+  <h2>Current Weather</h2>
+  <p>{{ weather.time }}</p>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th> Status</th>
+        <th> Current Temp</th>
+				<th> Hi/Low Temp</th>
+        <th> Wind </th>
+				<th> Pressure </th>
+				<th> Humidity </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+				<td>{{ weather.status }}</td>
+				<td>{{ weather.temperature.temp }} deg F</td>
+				<td>{{ weather.temperature.temp_max }} / {{ weather.temperature.temp_min }} deg F</td>
+				<td>{{ weather.wind.speed }} mph / {{ weather.wind.deg }} deg </td>
+				<td>{{ weather.pressure.press }} millibars </td>
+				<td>{{ weather.humidity }}%</td>
+      </tr>
+		</tbody>
+  </table>
+</div>
+
+<div class="container">
+  <h2>Hourly Forecast</h2>
+  <p></p>
+  <table class="table table-striped">
+    <thead>
+			<tr>
+				<th> Time</th>
+				<th> Status</th>
+        <th> Current Temp (deg F)</th>
+				<th> Hi/Low Temp</th>
+        <th> Wind (mph)/ Direction</th>
+				<th> Pressure (millibar)</th>
+				<th> Humidity </th>
+			</tr>
+    </thead>
+    <tbody>
+			{% for i in hour_forecast %}
+      <tr>
+				<tr>
+					<td>{{ i.time }}</td>
+					<td>{{ i.status }}</td>
+					<td>{{ i.temperature.temp }} </td>
+					<td>{{ i.temperature.temp_max }} / {{ i.temperature.temp_min }} </td>
+					<td>{{ i.wind.speed }} / {{ i.wind.deg }}  </td>
+					<td>{{ i.pressure.press }} </td>
+					<td>{{ i.humidity }}%</td>
+	      </tr>
+			</tr>
+			{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+<div class="container">
+  <h2>5 Day Forecast</h2>
+  <p></p>
+  <table class="table table-striped">
+		<thead>
+			<tr>
+				<th> Time</th>
+				<th> Status</th>
+        <th> Morn/Day/Evening Temp</th>
+				<th> Hi/Low Temp</th>
+        <th> Wind (mph)</th>
+				<th> Pressure (millibar)</th>
+				<th> Humidity </th>
+			</tr>
+    </thead>
+    <tbody>
+			{% for i in five_forecast %}
+      <tr>
+				<tr>
+					<td>{{ i.time }}</td>
+					<td>{{ i.status }}</td>
+					<td>{{ i.temperature.morn }} /  {{ i.temperature.day }} / {{ i.temperature.eve }} </td>
+					<td>{{ i.temperature.max }} / {{ i.temperature.min }} </td>
+					<td>{{ i.wind.speed }} </td>
+					<td>{{ i.pressure.press }} </td>
+					<td>{{ i.humidity }}%</td>
+	      </tr>
+			</tr>
+			{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}
