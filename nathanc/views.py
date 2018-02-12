@@ -2,11 +2,13 @@
 from flask import Flask
 from flask import request
 from flask import render_template
-from flask import session, redirect,url_for, flash
+from flask import session, redirect,url_for, flash, jsonify
 from datetime import datetime
 from werkzeug.contrib.fixers import ProxyFix
+
 import sys
 import os.path
+import json
 
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
@@ -20,6 +22,8 @@ from wtforms.validators import Required
 
 from nathanc import app
 from nathanc.weather import *
+from nathanc.events_calendar import *
+
 
 
 class NameForm(FlaskForm):
@@ -55,6 +59,28 @@ def weather():
     five_forecast = five_day_forecast(4373554)
 
     return render_template('weather.html', weather=weather, hour_forecast=hour_forecast, five_forecast=five_forecast)
+
+@app.route('/get_events')
+def get_events():
+    events=event_reader()
+    return events
+
+@app.route('/event_data')
+def return_events():
+    events=event_reader()
+    return jsonify(events)
+
+@app.route('/calendar')
+def calendar():
+    date=str(datetime.datetime.now())
+    date2='2018-01-09'
+    events = get_events()
+    return render_template('calendar.html', date=date2, eventdata=events)
+
+@app.route('/calendar2')
+def calendar2():
+    events = get_events()
+    return render_template('calendar.html', events=events)
 
 
 

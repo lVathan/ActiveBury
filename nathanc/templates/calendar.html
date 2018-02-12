@@ -1,0 +1,64 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} Nathan {% endblock %}
+
+{% block head %}
+{{ super() }}
+<meta charset='utf-8' />
+<meta id="my_event_data" data-event="{{ eventdata }}">
+<link href='../static/cal/fullcalendar.css' rel='stylesheet' />
+<link href='../static/cal/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+
+
+{% endblock %}
+
+{%block page_content %}
+<div class="page-header">
+Calendar
+</div>
+
+<body>
+
+	<div id='calendar'></div>
+
+</body>
+
+{% endblock %}
+
+{% block scripts %}
+<script src='../static/cal/lib/moment.min.js'></script>
+<script src='../static/cal/lib/jquery.min.js'></script>
+<script src='../static/cal/fullcalendar.js'></script>
+<script>
+
+  $(document).ready(function() {
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,basicWeek,basicDay'
+      },
+      defaultDate: moment().format('L'),
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      eventLimit: true, // allow "more" link when too many events
+
+      events: {
+				url: '/event_data',
+				error: function() {
+						$('#script-warning').show();
+				}
+			},
+			loading: function(bool) {
+						$('#loading').toggle(bool);
+			}
+
+    });
+
+  });
+
+
+</script>
+{% endblock %}
