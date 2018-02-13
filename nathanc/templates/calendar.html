@@ -8,7 +8,7 @@
 {{ super() }}
 <meta charset='utf-8' />
 <meta id="my_event_data" data-event="{{ eventdata }}">
-<link href='../static/cal/fullcalendar.css' rel='stylesheet' />
+<link href="{{url_for('static', filename='cal/fullcalendar.css')}}" rel='stylesheet' />
 <link href='../static/cal/fullcalendar.print.min.css' rel='stylesheet' media='print' />
 
 

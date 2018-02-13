@@ -72,10 +72,7 @@ def return_events():
 
 @app.route('/calendar')
 def calendar():
-    date=str(datetime.datetime.now())
-    date2='2018-01-09'
-    events = get_events()
-    return render_template('calendar.html', date=date2, eventdata=events)
+    return render_template('calendar.html')
 
 @app.route('/calendar2')
 def calendar2():
