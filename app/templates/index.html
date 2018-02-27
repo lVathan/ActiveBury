@@ -4,7 +4,7 @@
 
 {% block title %} Nathan {% endblock %}
 
-{%block page_content %}
+{%block app_content %}
 	<div class="page-header">
 		<h1>Hello, {{current_user.username }}!</h1>
 	</div>
@@ -24,13 +24,19 @@
 	{% for post in posts %}
 		{% include '_post.html' %}
 	{% endfor %}
-	{% if prev_url %}
-	<a></a>
-	<a href="{{ prev_url }}">Newer posts</a>
-	{% endif %}
-	{% if next_url %}
-	<a></a>
-	<a href="{{ next_url }}">Older posts</a>
-	{% endif %}
 
+	<nav aria-label="...">
+		<ul class="pager">
+			<li class="previous{% if not prev_url %} disabled{% endif %}">
+				<a href="{{ prev_url or '#' }}">
+					<span aria-hidden="true">&larr;</span> Newer posts
+				</a>
+			</li>
+			<li class="next{% if not next_url %} disabled{% endif %}">
+				<a href="{{ next_url or '#' }}">
+					Older posts <span aria-hidden="true">&rarr;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
 {% endblock %}
