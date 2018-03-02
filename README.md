@@ -1,2 +1,2 @@
-# todoweb
-todo web app
+# Active Bury 
+Community Calendar Web Application
