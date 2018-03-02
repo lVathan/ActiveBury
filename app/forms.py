@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms import TextAreaField
+from wtforms import TextAreaField, IntegerField, DateTimeField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
 from app.models import User
+from datetime import datetime
 
 
 class LoginForm(FlaskForm):
@@ -49,3 +50,14 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('Please use a different username.')
+
+
+class EventForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[Length(min=1, max=240)])
+    start_time = DateTimeField('Start Time', format="%Y-%m-%dT%H:%M:%S",
+                default=datetime.today, validators=[DataRequired()])
+    end_time = DateTimeField('End Time', format="%Y-%m-%dT%H:%M:%S")
+    address = StringField('Address')
+    zipcode = IntegerField('Zipcode')
+    submit = SubmitField('Register')

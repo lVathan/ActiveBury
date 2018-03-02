@@ -33,7 +33,7 @@ from app import errors
 #import nathanc.views
 #import nathanc.models
 
-if not app.debug:
+"""if not app.debug:
     if app.config['MAIL_SERVER']:
         auth=None
         if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
@@ -59,3 +59,4 @@ if not app.debug:
 
     app.logger.setLevel(logging.INFO)
     app.logger.info('NCApp startup')
+"""

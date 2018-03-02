@@ -16,12 +16,18 @@
 
 {%block app_content %}
 <div class="page-header">
-Calendar
+<h1>Calendar</h1>
 </div>
 
 <body>
-
 	<div id='calendar'></div>
+	<p>
+		{% if current_user.is_anonymous %}
+		{% else %}
+		<a href="{{ url_for('add_events')}}">Add Events</a>
+		{% endif %}
+	</p>
+
 
 </body>
 

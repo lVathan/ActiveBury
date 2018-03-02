@@ -27,7 +27,8 @@ from app import db
 from app.weather import *
 from app.events_calendar import *
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
-from app.models import User, Post
+from app.forms import EventForm
+from app.models import User, Post, Event
 
 @app.before_request
 def before_request():
@@ -69,6 +70,53 @@ def explore():
         if posts.has_prev else None
     return render_template('index.html', title='Explore', posts=posts.items,
                             next_url=next_url, prev_url=prev_url)
+
+@app.route('/add_events', methods=['GET', 'POST'])
+@login_required
+def add_events():
+    form = EventForm()
+    if form.validate_on_submit():
+        event = Event(title=form.title.data,
+                description=form.description.data, start_time=form.start_time.data,
+                end_time=form.end_time.data,
+                address=form.address.data, zipcode=form.zipcode.data,
+                creater=current_user)
+        db.session.add(event)
+        db.session.commit()
+        flash('Your event has been added to the calendar')
+        return redirect(url_for('calendar'))
+    return render_template('add_events.html', title='Add Events', form=form)
+
+@app.route('/event/<id>')
+@login_required
+def event(id):
+    event = Event.query.filter_by(id=int(id)).first_or_404()
+    return render_template('event.html', event=event)
+
+@app.route('/edit_event/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_event(id):
+
+    form = EventForm()
+    event=Event.query.filter_by(id=int(id)).first_or_404()
+    if form.validate_on_submit():
+        event.title = form.title.data
+        event.description = form.description.data
+        event.start_time = form.start_time.data
+        event.end_time = form.end_time.data
+        event.address = form.address.data
+        event.zipcode = form.zipcode.data
+        db.session.commit()
+        flash('Your changes have been saved')
+        return redirect(url_for('event', id=id))
+    elif request.method =='GET':
+        form.title.data = event.title
+        form.description.data = event.description
+        form.start_time.data = event.start_time
+        form.end_time.data = event.end_time
+        form.address.data = event.address
+        form.zipcode.data = event.zipcode
+    return render_template('edit_event.html', title='Edit Event', form=form)
 
 
 @app.route('/login', methods =['GET', 'POST'])
@@ -179,10 +227,6 @@ def weather():
 
     return render_template('weather.html', weather=weather, hour_forecast=hour_forecast, five_forecast=five_forecast)
 
-@app.route('/get_events')
-def get_events():
-    events=event_reader()
-    return events
 
 @app.route('/event_data')
 def return_events():
@@ -192,12 +236,6 @@ def return_events():
 @app.route('/calendar')
 def calendar():
     return render_template('calendar.html')
-
-@app.route('/calendar2')
-def calendar2():
-    events = get_events()
-    return render_template('calendar.html', events=events)
-
 
 
 @app.errorhandler(404)

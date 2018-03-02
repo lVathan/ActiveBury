@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    events = db.relationship('Event', backref='creater', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     followed = db.relationship(
@@ -56,10 +57,9 @@ class User(UserMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
 
-    @login.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
-
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 
@@ -71,3 +71,17 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}'.format(self.body)
+
+class Event(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(140))
+    description = db.Column(db.String(240))
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    address = db.Column(db.String(140))
+    zipcode = db.Column(db.Integer)
+
+
+    def __repr__(self):
+        return '<Event {}'.format(self.title)
