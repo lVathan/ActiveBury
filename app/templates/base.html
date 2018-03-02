@@ -1,0 +1,58 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %} Nathan {% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% endblock %}
+
+{% block navbar %}
+<nav class = "navbar navbar-inverse navbar-static-top" role="navigation">
+	<div class = "container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target = "#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href = "{{ url_for('index')}}">Home</a>
+		</div>
+		<div id="navbar" class = "navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				{% if current_user.is_anonymous %}
+				<li><a href="{{ url_for('login')}}">Login</a></li>
+				{% else %}
+				<li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a>
+				<li><a href="{{ url_for('event', id=1) }}">Event</a>
+				<li><a href="{{ url_for('logout')}}">Logout</a></li>
+				{% endif %}
+				<li><a href="{{ url_for('calendar')}}">Calendar</a></li>
+				<li><a href="{{ url_for('resume')}}">Resume</a></li>
+				<li><a href="{{ url_for('weather')}}">Weather</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+{% endblock %}
+
+{%block content %}
+<div class="container">
+	{% with messages = get_flashed_messages() %}
+	{% if message %}
+		{% for message in messages %}
+		<div class="alert alert-info" role="alert">{{ message }}</div>
+		{% endfor %}
+	{% endif %}
+	{% endwith %}
+	{# application content needs to be provided in the app_content block #}
+	{% block app_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}

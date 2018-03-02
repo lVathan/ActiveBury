@@ -1,0 +1,53 @@
+
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block app_content %}
+<h1>{{ title }}</h1>
+<form = action="" method="post">
+	{{ form.hidden_tag() }}
+	<p>
+		{{ form.title.label }}<br>
+		{{ form.title(size=32) }}<br>
+		{% for error in form.title.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
+		{{ form.description.label }}<br>
+		{{ form.description(cols=50, rows=4) }}<br>
+		{% for error in form.description.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
+		{{ form.start_time.label }}<br>
+		{{ form.start_time(cols=50, rows=4) }}<br>
+		{% for error in form.start_time.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
+		{{ form.end_time.label }}<br>
+		{{ form.end_time(cols=50, rows=4) }}<br>
+		{% for error in form.end_time.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
+		{{ form.address.label }}<br>
+		{{ form.address(cols=50, rows=4) }}<br>
+		{% for error in form.address.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
+		{{ form.zipcode.label }}<br>
+		{{ form.zipcode(cols=50, rows=4) }}<br>
+		{% for error in form.zipcode.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

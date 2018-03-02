@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} Nathan {% endblock %}
+
+{%block app_content %}
+	<div class="page-header">
+		<h1>Hello, {{current_user.username }}!</h1>
+	</div>
+	{% if form %}
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.post.label }}<br>
+			{{ form.post(cols=32, rows=4) }}<br>
+			{% for error in form.post.errors %}
+			<span style="color:red;">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+		<p>{{ form.submit() }}</p>
+	</form>
+	{% endif %}
+	{% for post in posts %}
+		{% include '_post.html' %}
+	{% endfor %}
+
+	<nav aria-label="...">
+		<ul class="pager">
+			<li class="previous{% if not prev_url %} disabled{% endif %}">
+				<a href="{{ prev_url or '#' }}">
+					<span aria-hidden="true">&larr;</span> Newer posts
+				</a>
+			</li>
+			<li class="next{% if not next_url %} disabled{% endif %}">
+				<a href="{{ next_url or '#' }}">
+					Older posts <span aria-hidden="true">&rarr;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+{% endblock %}

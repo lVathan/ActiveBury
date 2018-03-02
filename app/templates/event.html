@@ -1,0 +1,37 @@
+
+{% extends "base.html" %}
+
+{%block app_content %}
+	<table>
+		<tr valign="top">
+			<td>
+				<h1>Event: {{ event.title }}</h1>
+				{% if event.description %}<p>{{ event.description }}</p>{% endif %}
+				{% if event.start_time %}<p>Start Time: {{ moment(event.start_time).format('LLL') }}</p>{% endif %}
+				{% if event.end_time %}<p>End Time: {{ moment(event.end_time).format('LLL') }} </p>{% endif %}
+				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
+				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}
+				{% if event.creater == current_user %}
+				<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
+				{% endif %}
+			</td>
+		</tr>
+	</table><br>
+	{% for post in posts %}
+		{% include '_post.html' %}
+	{% endfor %}
+	<nav aria-label="...">
+		<ul class="pager">
+			<li class="previous{% if not prev_url %} disabled{% endif %}">
+				<a href="{{ prev_url or '#' }}">
+					<span aria-hidden="true">&larr;</span> Newer posts
+				</a>
+			</li>
+			<li class="next{% if not next_url %} disabled{% endif %}">
+				<a href="{{ next_url or '#' }}">
+					Older posts <span aria-hidden="true">&rarr;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+{% endblock %}
