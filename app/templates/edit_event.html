@@ -4,7 +4,7 @@
 
 {%block app_content %}
 <h1>{{ title }}</h1>
-<form = action="" method="post">
+<form = action="#" method="post">
 	{{ form.hidden_tag() }}
 	<p>
 		{{ form.title.label }}<br>
@@ -50,4 +50,15 @@
 	</p>
 	<p>{{ form.submit() }}</p>
 </form>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+<script type="text/javascript">
+		$(function () {
+				$('#datetimepicker1').datetimepicker();
+		});
+</script>
 {% endblock %}

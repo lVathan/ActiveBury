@@ -7,7 +7,7 @@
 			<td>
 				<h1>Event: {{ event.title }}</h1>
 				{% if event.description %}<p>{{ event.description }}</p>{% endif %}
-				{% if event.start_time %}<p>Start Time: {{ moment(event.start_time).format('LLL') }}</p>{% endif %}
+				{% if event.start_time %}<p>Start Time: {{ event.start_time.strftime('%m-%d-%Y %I:%M:%S %p') }}</p>{% endif %}
 				{% if event.end_time %}<p>End Time: {{ moment(event.end_time).format('LLL') }} </p>{% endif %}
 				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
 				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}

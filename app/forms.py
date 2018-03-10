@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms import TextAreaField, IntegerField, DateTimeField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
+from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length, Optional
 from app.models import User
 from datetime import datetime
 
@@ -55,9 +55,9 @@ class EditProfileForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[Length(min=1, max=240)])
-    start_time = DateTimeField('Start Time', format="%Y-%m-%dT%H:%M:%S",
+    start_time = DateTimeField('Start Time',
                 default=datetime.today, validators=[DataRequired()])
-    end_time = DateTimeField('End Time', format="%Y-%m-%dT%H:%M:%S")
-    address = StringField('Address')
-    zipcode = IntegerField('Zipcode')
+    end_time = DateTimeField('End Time', format="%Y-%m-%dT%H:%M:%S", validators=[Optional()])
+    address = StringField('Address', validators=[Optional()])
+    zipcode = IntegerField('Zipcode', validators=[Optional()])
     submit = SubmitField('Register')
