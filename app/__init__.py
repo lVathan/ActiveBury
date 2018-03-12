@@ -19,9 +19,9 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login'
-bootstrap = Bootstrap(app)
 manager = Manager(app)
 moment = Moment(app)
 

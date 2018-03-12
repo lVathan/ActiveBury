@@ -36,6 +36,7 @@ def before_request():
         current_user.last_seen = datetime.datetime.utcnow()
         db.session.commit()
 
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
@@ -92,6 +93,14 @@ def add_events():
 def event(id):
     event = Event.query.filter_by(id=int(id)).first_or_404()
     return render_template('event.html', event=event)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 @app.route('/edit_event/<id>', methods=['GET', 'POST'])
 @login_required

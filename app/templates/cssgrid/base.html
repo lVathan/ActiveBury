@@ -1,0 +1,53 @@
+{% block doc -%}
+<!DOCTYPE html>
+<html{% block html_attribs %}{% endblock html_attribs %}>
+{%- block html %}
+  <head>
+    {%- block head %}
+    <title>{% block title %}{{title|default}}{% endblock title %}</title>
+
+    {%- block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {%- endblock metas %}
+
+    {%- block styles %}
+    <link rel="stylesheet" href="/static/css/reset.css?q=1280549780" type="text/css" media="screen" charset="utf-8" />
+    {%- endblock styles %}
+
+    {%- endblock head %}
+  </head>
+  <body>
+    <div class="container">
+      <header>
+      {% block header %}
+      {%- endblock header %}
+      </header>
+
+      <nav>
+        {% block navbar %}
+        {%- endblock navbar %}
+      </nav>
+      <main{% block body_attribs %}{% endblock body_attribs %}>
+        {% block body -%}
+
+        {% block content -%}
+        {%- endblock content %}
+
+        {% block scripts %}
+        <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+        {%- endblock scripts %}
+        {%- endblock body %}
+      </main>
+      <footer>
+        {% block footer -%}
+        <div class="footermenu">
+          <p><a href="{{ url_for('about') }}">About</a></p>
+          <p><a href="{{ url_for('contact') }}">Contact Us</a></p>
+        {%- endblock footer %}
+      </footer>
+    </div>
+
+  </body>
+{%- endblock html %}
+</html>
+{% endblock doc -%}

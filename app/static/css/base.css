@@ -1,0 +1,153 @@
+html {
+    font-size: 1em;
+    line-height: 1.5;
+    height=100%;
+}
+
+body {
+    color: var(--text-color);
+    font-size: 17px;
+}
+
+body, h1, h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: var(--primary);
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+h2 {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+a, a:link    {
+     color: var(--link-color)
+}
+
+.hidden {
+    display: none !important;
+}
+
+.text-center, footer, header {
+    text-align: center;
+}
+
+.container{
+    display: grid;
+
+    grid-template-areas:
+        "header header header"
+        "nav content side"
+        "footer footer footer";
+    grid-template-columns: 100px 1fr 200px;
+    grid-template-rows: 100px 1fr auto;
+    grid-gap: 10px;
+
+    height: 100vh;
+
+}
+
+header {
+    background: lightgray;
+    grid-area: header;
+    padding: 1rem 0;
+    padding: 0 1rem;
+    display: flex;
+
+    align-items: center;
+
+}
+
+nav {
+    grid-area: nav;
+    background: lightgreen;
+    text-transform: uppercase;
+    color: lightslategray;
+    align-items: center;
+    justify-content: center;
+}
+
+header > .container-menu {
+
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    width: 70%;
+    height: 100%;
+    padding: 40px 20px;
+    border-radius: 5px;
+    justify-content:flex-start;
+}
+header > .container-menu > li {
+    padding: 10px;
+    font-size: 1.5em;
+    box-sizing: border-box;
+}
+
+header > .container-menu > li > a {
+    text-decoration-line: none;
+    text-decoration-color: green;
+}
+
+
+.log {
+    margin-left: auto;
+}
+
+
+main {
+    grid-area: content;
+    minmax: 400px, 900px;
+}
+
+aside {
+    grid-area: side;
+    margin-right: 0.5rem;
+}
+
+footer {
+    grid-area: footer;
+}
+
+.footermenu {
+    display: flex;
+    width: 70%;
+    justify-content: flex-end;
+    margin-left: auto;
+    margin-right: auto;
+}
+.footermenu > p {
+    padding-right: 1rem;
+}
+
+@media(max-width: 768px) {
+    .container{
+        grid-template-areas:
+            "header"
+            "nav"
+            "content"
+            "side"
+            "footer";
+        grid-template-columns: 1fr;
+        grid-template-rows:
+            auto
+            minmax(75px, auto)/* Nav*/
+            1fr/* Content*/
+            minmax(75px, auto)/*Sidebar*/
+            auto;/*Footer*/
+    }
+    nav, aside {
+        margin: 0;
+    }
+}

@@ -1,44 +1,48 @@
-{% extends "bootstrap/base.html" %}
+{% extends "cssgrid/base.html" %}
 
 {% block title %} Nathan {% endblock %}
 
 {% block head %}
 {{ super() }}
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jumbotron-narrow.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+	<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% endblock %}
+
+{%- block styles %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+{%- endblock styles %}
+
+{% block header %}
+			<ul class="container-menu">
+				<h1>Active Bury</h1>
+				<li><a href="{{ url_for('index') }}">Home</a></li>
+				<li><a href="{{ url_for('calendar') }}">Calendar</a></li>
+				{% if current_user.is_anonymous %}
+				<li class="log"><a href="{{ url_for('login')}}">Login</a></li>
+				{% else %}
+				<li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
+				<li class="log"><a href="{{ url_for('logout')}}">Logout</a></li>
+				{% endif %}
+			</ul>
 {% endblock %}
 
 {% block navbar %}
-<div class="container-narrow">
-	<div class="masthead">
-		<ul class="nav nav-pills pull-right">
-			<li class="active"><a href="{{ url_for('calendar') }}">Calendar</a></li>
-			{% if current_user.is_anonymous %}
-	 		<li class="active"><a href="{{ url_for('login')}}">Login</a></li>
-			{% else %}
-			<li class="active"><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
-			<li class="active"><a href="{{ url_for('logout')}}">Logout</a></li>
-			{% endif %}
-		</ul>
-		<h3 class="muted">Active Bury</h3>
-	</div>
-</div>
 
 {% endblock %}
 
 {%block content %}
-<div class="container">
-	{% with messages = get_flashed_messages() %}
-	{% if message %}
-		{% for message in messages %}
-		<div class="alert alert-info" role="alert">{{ message }}</div>
-		{% endfor %}
-	{% endif %}
-	{% endwith %}
-	{# application content needs to be provided in the app_content block #}
-	{% block app_content %}{% endblock %}
-</div>
+
+		{% with messages = get_flashed_messages() %}
+		{% if message %}
+			{% for message in messages %}
+			<div class="alert alert-info" role="alert">{{ message }}</div>
+			{% endfor %}
+		{% endif %}
+		{% endwith %}
+		{# application content needs to be provided in the app_content block #}
+		{% block app_content %}{% endblock %}
+
 {% endblock %}
 
 {% block scripts %}
