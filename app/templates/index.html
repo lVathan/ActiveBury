@@ -4,23 +4,25 @@
 
 {% block title %} Nathan {% endblock %}
 
+{%- block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/index.css"</>
+{%- endblock styles %}
+
 {%block app_content %}
 	<div class="page-header">
 		<h1>Hello, {{current_user.username }}!</h1>
 	</div>
-	{% if form %}
-	<form action="" method="post">
-		{{ form.hidden_tag() }}
-		<p>
-			{{ form.post.label }}<br>
-			{{ form.post(cols=32, rows=4) }}<br>
-			{% for error in form.post.errors %}
-			<span style="color:red;">[{{ error }}]</span>
-			{% endfor %}
-		</p>
-		<p>{{ form.submit() }}</p>
-	</form>
-	{% endif %}
+
+	<div class="day_events">
+
+		<h3> {{ moment(days[0]).format('dddd') }}</h3>
+		<h3> {{ moment(days[1]).format('dddd') }}</h3>
+		<h3> {{ moment(days[2]).format('dddd') }}</h3>
+		<h3> {{ moment(days[3]).format('dddd') }}</h3>
+		<h3> {{ moment(days[4]).format('dddd') }}</h3>
+	</div>
+
 	{% for post in posts %}
 		{% include '_post.html' %}
 	{% endfor %}

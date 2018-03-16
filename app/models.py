@@ -68,6 +68,7 @@ class Post(db.Model):
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    topic_id = db.Column(db.Integer, db.ForeignKey('event.id'))
 
     def __repr__(self):
         return '<Post {}'.format(self.body)
@@ -76,11 +77,14 @@ class Event(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(140))
     description = db.Column(db.String(240))
-    start_time = db.Column(db.DateTime)
-    end_time = db.Column(db.DateTime)
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
+    start_time = db.Column(db.Time)
+    end_time = db.Column(db.Time)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     address = db.Column(db.String(140))
     zipcode = db.Column(db.Integer)
+    posts = db.relationship('Post', backref='topic', lazy='dynamic')
 
 
     def __repr__(self):

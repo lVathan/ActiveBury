@@ -7,19 +7,18 @@ from app.models import Event
 def event_reader():
     events= [
     {
-        'start':'2018-2-14 14:00:00','title': 'Valentines Day'
+        'start':'2018-03-14 14:00:00','title': 'Valentines Day'
     },
     {
-        'start':'2018-2-17','title': 'Dinner'
+        'start':'2018-03-17','title': 'Dinner'
     },
     {
-        'start':'2018-2-13','title': 'Sergio and Odair Concert'
+        'start':'2018-03-13','title': 'Sergio and Odair Concert'
     },
     ]
     events2 = Event.query.all()
     for e in events2:
-        events.append(dict({'start': str(e.start_time), 'title': e.title, 'url':'/event/{}'.format(e.id)}))
 
- #session['cart'].append(dict({'product_id': id, 'qty': int(qty)}))
+        events.append(dict({'start': str(e.start_date), 'title': e.title, 'url':'/event/{}'.format(e.id)}))
 
     return events

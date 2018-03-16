@@ -49,7 +49,7 @@ a, a:link    {
         "header header header"
         "nav content side"
         "footer footer footer";
-    grid-template-columns: 100px 1fr 200px;
+    grid-template-columns: 0.3fr 60% 50px;
     grid-template-rows: 100px 1fr auto;
     grid-gap: 10px;
 
@@ -97,7 +97,6 @@ header > .container-menu > li {
 
 header > .container-menu > li > a {
     text-decoration-line: none;
-    text-decoration-color: green;
 }
 
 
@@ -142,12 +141,32 @@ footer {
         grid-template-columns: 1fr;
         grid-template-rows:
             auto
-            minmax(75px, auto)/* Nav*/
+            minmax(25px, auto)/* Nav*/
             1fr/* Content*/
-            minmax(75px, auto)/*Sidebar*/
+            minmax(25px, auto)/*Sidebar*/
             auto;/*Footer*/
     }
     nav, aside {
         margin: 0;
+    }
+    header > .container-menu > li {
+        font-size: 1em;
+        box-sizing: border-box;
+    }
+    h1 {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+    header > .container-menu {
+
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        align-items: center;
+        width: 95%;
+        height: 100%;
+        padding: 0.2em 0.2em;
+        border-radius: 5px;
+        justify-content:flex-start;
     }
 }

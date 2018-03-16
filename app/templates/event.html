@@ -1,14 +1,17 @@
 
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {%block app_content %}
 	<table>
 		<tr valign="top">
 			<td>
 				<h1>Event: {{ event.title }}</h1>
-				{% if event.description %}<p>{{ event.description }}</p>{% endif %}
-				{% if event.start_time %}<p>Start Time: {{ event.start_time.strftime('%m-%d-%Y %I:%M:%S %p') }}</p>{% endif %}
-				{% if event.end_time %}<p>End Time: {{ moment(event.end_time).format('LLL') }} </p>{% endif %}
+				{% if event.description %}<p>Description: {{ event.description }}</p>{% endif %}
+				{% if event.start_date %}<p>Start Date: {{ moment(event.start_date).format('LL') }}</p>{% endif %}
+				{% if event.start_time %}<p>Start Time: {{ event.start_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
+				{% if event.end_date %}<p>End Date: {{ moment(event.end_date).format('LL') }}</p>{% endif %}
+				{% if event.end_time %}<p>End Time: {{ event.end_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
 				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
 				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}
 				{% if event.creater == current_user %}
@@ -17,11 +20,26 @@
 			</td>
 		</tr>
 	</table><br>
+
+	{% if form %}
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.post.label }}<br>
+			{{ form.post(cols=32, rows=4) }}<br>
+			{% for error in form.post.errors %}
+			<span style="color:red;">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+		<p>{{ form.submit() }}</p>
+	</form>
+	{% endif %}
+
+
 	{% for post in posts %}
 		{% include '_post.html' %}
 	{% endfor %}
-	<nav aria-label="...">
-		<ul class="pager">
+		<ul class="nextpost">
 			<li class="previous{% if not prev_url %} disabled{% endif %}">
 				<a href="{{ prev_url or '#' }}">
 					<span aria-hidden="true">&larr;</span> Newer posts
@@ -33,5 +51,4 @@
 				</a>
 			</li>
 		</ul>
-	</nav>
 {% endblock %}

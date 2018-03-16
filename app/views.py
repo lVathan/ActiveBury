@@ -37,31 +37,15 @@ def before_request():
         db.session.commit()
 
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/')
+@app.route('/index')
 @login_required
 def index():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live')
-        return redirect(url_for('index'))
-    page = request.args.get('page', 1, type=int)
-    posts = current_user.followed_posts().paginate(
-        page, app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('index', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('index', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template('index.html', title='Home Page', form=form,
-                            posts=posts.items, next_url=next_url,
-                            prev_url=prev_url)
-
-@app.route('/explore')
-@login_required
-def explore():
+#    event = Event.query.filter_by(id=int(id)).first_or_404()
+    days=[]
+    days.append(datetime.datetime.utcnow())
+    for day in range(4):
+        days.append(days[0]+datetime.timedelta(days=(day+1)))
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -70,7 +54,7 @@ def explore():
     prev_url = url_for('explore', page=posts.prev_num) \
         if posts.has_prev else None
     return render_template('index.html', title='Explore', posts=posts.items,
-                            next_url=next_url, prev_url=prev_url)
+                            next_url=next_url, days=days, prev_url=prev_url)
 
 @app.route('/add_events', methods=['GET', 'POST'])
 @login_required
@@ -78,7 +62,10 @@ def add_events():
     form = EventForm()
     if form.validate_on_submit():
         event = Event(title=form.title.data,
-                description=form.description.data, start_time=form.start_time.data,
+                description=form.description.data,
+                start_date=form.start_date.data,
+                start_time=form.start_time.data,
+                end_date=form.end_date.data,
                 end_time=form.end_time.data,
                 address=form.address.data, zipcode=form.zipcode.data,
                 creater=current_user)
@@ -88,11 +75,26 @@ def add_events():
         return redirect(url_for('calendar'))
     return render_template('add_events.html', title='Add Events', form=form)
 
-@app.route('/event/<id>')
+@app.route('/event/<id>', methods=['GET', 'POST'])
 @login_required
 def event(id):
+    user = current_user
+    form = PostForm()
     event = Event.query.filter_by(id=int(id)).first_or_404()
-    return render_template('event.html', event=event)
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user, topic=event)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is now live')
+        return redirect(url_for('event', id=id))
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(id=int(id)).order_by(Post.timestamp.desc()).paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('explore', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('explore', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('event.html', form=form, event=event, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 @app.route('/about')
 def about():
@@ -108,24 +110,32 @@ def edit_event(id):
 
     form = EventForm()
     event=Event.query.filter_by(id=int(id)).first_or_404()
+    print(event.id)
     if form.validate_on_submit():
         event.title = form.title.data
-        event.description = form.description.data
-        event.start_time = form.start_time.data
-        event.end_time = form.end_time.data
-        event.address = form.address.data
-        event.zipcode = form.zipcode.data
+        event.description=form.description.data
+        event.start_date=form.start_date.data
+        event.start_time=form.start_time.data
+        event.end_date=form.end_date.data
+        event.end_time=form.end_time.data
+        event.address=form.address.data
+        event.zipcode=form.zipcode.data
+        event.creater=current_user
+        print(event.id)
         db.session.commit()
+        print(form.end_time.data)
         flash('Your changes have been saved')
         return redirect(url_for('event', id=id))
     elif request.method =='GET':
         form.title.data = event.title
         form.description.data = event.description
+        form.start_date.data = event.start_date
         form.start_time.data = event.start_time
+        form.end_date.data = event.start_date
         form.end_time.data = event.end_time
         form.address.data = event.address
         form.zipcode.data = event.zipcode
-    return render_template('edit_event.html', title='Edit Event', form=form)
+    return render_template('add_events.html', title='Edit Event', form=form)
 
 
 @app.route('/login', methods =['GET', 'POST'])
@@ -168,6 +178,13 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is now live')
+        return redirect(url_for('user', username=username))
     page = request.args.get('page', 1, type=int)
     posts = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -175,7 +192,7 @@ def user(username):
         if posts.has_next else None
     prev_url = url_for('user', username=user.username, page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('user.html', user=user, posts=posts.items,
+    return render_template('user.html', user=user, form=form, posts=posts.items,
                             next_url=next_url, prev_url=prev_url)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -244,7 +261,8 @@ def return_events():
 
 @app.route('/calendar')
 def calendar():
-    return render_template('calendar.html')
+    events=event_reader()
+    return render_template('calendar.html', events=events)
 
 
 @app.errorhandler(404)

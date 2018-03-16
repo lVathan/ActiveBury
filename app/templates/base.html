@@ -1,6 +1,6 @@
 {% extends "cssgrid/base.html" %}
 
-{% block title %} Nathan {% endblock %}
+{% block title %} Active Bury {% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -32,12 +32,14 @@
 {% endblock %}
 
 {%block content %}
-
+		<hr>
 		{% with messages = get_flashed_messages() %}
 		{% if message %}
+		<ul>
 			{% for message in messages %}
-			<div class="alert alert-info" role="alert">{{ message }}</div>
+			<li>{{ message }}</li>
 			{% endfor %}
+		</ul>
 		{% endif %}
 		{% endwith %}
 		{# application content needs to be provided in the app_content block #}

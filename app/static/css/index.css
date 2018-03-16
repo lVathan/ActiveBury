@@ -1,0 +1,22 @@
+.day_events {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 0.9fr));
+    grid-template-rows: repeat(5, 100px);
+    justify-content: center;
+
+
+}
+
+.day_events > h3 {
+    flex: 1;
+    border: 1px lightgreen;
+    background-color: lightblue;
+
+}
+.day_events > form {
+    display: grid;
+    border: 1px lightgreen;
+    background-color: lightblue;
+
+}

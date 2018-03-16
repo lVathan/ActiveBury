@@ -1,0 +1,10 @@
+.add_event {
+    display: grid;
+    grid-gap: 5px;
+    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+}
+.eventtitle, .eventdescription, .eventaddress, .eventzip {
+    grid-column: 1/-1;
+}
