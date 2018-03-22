@@ -4,6 +4,7 @@ from flask import request
 from flask import render_template
 from flask import session, redirect,url_for, flash, jsonify
 from datetime import datetime
+#import datetime
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.urls import url_parse
 
@@ -43,9 +44,17 @@ def before_request():
 def index():
 #    event = Event.query.filter_by(id=int(id)).first_or_404()
     days=[]
-    days.append(datetime.datetime.utcnow())
-    for day in range(4):
-        days.append(days[0]+datetime.timedelta(days=(day+1)))
+    next_days=[]
+    week_events=[0,1,2,3,4,5]
+    for day in range(5):
+        days.append(datetime.datetime.utcnow()+datetime.timedelta(days=day))
+        next_days.append(datetime.datetime.utcnow()+datetime.timedelta(days=day+1))
+        #days.append(days[0]+datetime.timedelta(days=(day+1)))
+        #print(days[day].date())
+        week_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+            Event.start_date <= next_days[day].date()).all()
+    print(week_events[1][0])
+
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -53,8 +62,8 @@ def index():
         if posts.has_next else None
     prev_url = url_for('explore', page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('index.html', title='Explore', posts=posts.items,
-                            next_url=next_url, days=days, prev_url=prev_url)
+    return render_template('index.html', title='Explore', events = week_events,
+        posts=posts.items, next_url=next_url, days=days, prev_url=prev_url, day_count=range(5))
 
 @app.route('/add_events', methods=['GET', 'POST'])
 @login_required
@@ -135,6 +144,7 @@ def edit_event(id):
         form.end_time.data = event.end_time
         form.address.data = event.address
         form.zipcode.data = event.zipcode
+
     return render_template('add_events.html', title='Edit Event', form=form)
 
 

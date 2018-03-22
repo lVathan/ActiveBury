@@ -2,19 +2,21 @@
     display: grid;
     grid-gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(100px, 0.9fr));
-    grid-template-rows: repeat(5, 100px);
+    grid-template-rows: repeat(5, minmax(100px,0.9fr));
     justify-content: center;
 
 
 }
 
-.day_events > h3 {
+.day_event_list {
     flex: 1;
+    flex-direction: column;
+    padding-left: 0.5em;
     border: 1px lightgreen;
     background-color: lightblue;
 
 }
-.day_events > form {
+.day_event_list > li {
     display: grid;
     border: 1px lightgreen;
     background-color: lightblue;

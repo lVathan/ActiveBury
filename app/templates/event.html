@@ -8,9 +8,9 @@
 			<td>
 				<h1>Event: {{ event.title }}</h1>
 				{% if event.description %}<p>Description: {{ event.description }}</p>{% endif %}
-				{% if event.start_date %}<p>Start Date: {{ moment(event.start_date).format('LL') }}</p>{% endif %}
+				{% if event.start_date %}<p>Start Date: {{ event.start_date.strftime('%B %d, %Y') }}</p>{% endif %}
 				{% if event.start_time %}<p>Start Time: {{ event.start_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
-				{% if event.end_date %}<p>End Date: {{ moment(event.end_date).format('LL') }}</p>{% endif %}
+				{% if event.end_date %}<p>End Date: {{ event.end_date.strftime('%B %d, %Y') }}</p>{% endif %}
 				{% if event.end_time %}<p>End Time: {{ event.end_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
 				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
 				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}

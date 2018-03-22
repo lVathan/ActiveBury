@@ -16,13 +16,26 @@
 
 	<div class="day_events">
 
-		<h3> {{ moment(days[0]).format('dddd') }}</h3>
-		<h3> {{ moment(days[1]).format('dddd') }}</h3>
-		<h3> {{ moment(days[2]).format('dddd') }}</h3>
-		<h3> {{ moment(days[3]).format('dddd') }}</h3>
-		<h3> {{ moment(days[4]).format('dddd') }}</h3>
-	</div>
+		{% for count in day_count %}
+		<div class = "day_event_list">
+			<h3> {{ moment(days[count]).format('dddd') }}</h3>
+			<ul>
+				{% for ev in events[count] %}
+				{% if ev.title %}
+				<li>
+					<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
+					{% if ev.start_time %}
+						{{ ev.start_time.strftime('%I:%M %p') }}
+					{% endif %}
+				{% endif %}
 
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endfor %}
+
+	</div>
 	{% for post in posts %}
 		{% include '_post.html' %}
 	{% endfor %}
