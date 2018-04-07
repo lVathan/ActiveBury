@@ -14,6 +14,7 @@
 				{% if event.end_time %}<p>End Time: {{ event.end_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
 				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
 				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}
+				{% if event.category %}<p>Category: {{ event.category }} </p>{% endif %}
 				{% if event.creater == current_user %}
 				<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
 				{% endif %}

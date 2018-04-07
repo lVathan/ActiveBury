@@ -47,13 +47,12 @@ def index():
     next_days=[]
     week_events=[0,1,2,3,4,5]
     for day in range(5):
-        days.append(datetime.datetime.utcnow()+datetime.timedelta(days=day))
-        next_days.append(datetime.datetime.utcnow()+datetime.timedelta(days=day+1))
+        days.append(datetime.datetime.now()+datetime.timedelta(days=day))
+        next_days.append(datetime.datetime.now()+datetime.timedelta(days=day+1))
         #days.append(days[0]+datetime.timedelta(days=(day+1)))
-        #print(days[day].date())
+        print(days[day].date())
         week_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
             Event.start_date <= next_days[day].date()).all()
-    print(week_events[1][0])
 
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
@@ -103,6 +102,7 @@ def event(id):
         if posts.has_next else None
     prev_url = url_for('explore', page=posts.prev_num) \
         if posts.has_prev else None
+    print(event.zipcode)
     return render_template('event.html', form=form, event=event, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 @app.route('/about')
@@ -121,18 +121,25 @@ def edit_event(id):
     event=Event.query.filter_by(id=int(id)).first_or_404()
     print(event.id)
     if form.validate_on_submit():
+        print('hello')
         event.title = form.title.data
         event.description=form.description.data
         event.start_date=form.start_date.data
-        event.start_time=form.start_time.data
-        event.end_date=form.end_date.data
-        event.end_time=form.end_time.data
-        event.address=form.address.data
-        event.zipcode=form.zipcode.data
+        if form.start_time.data:
+            event.start_time=form.start_time.data
+        if form.end_date.data:
+            event.end_date=form.end_date.data
+        if form.end_time.data:
+            event.end_time=form.end_time.data
+        if form.address.data:
+            event.address=form.address.data
+        if form.zipcode.data:
+            event.zipcode=form.zipcode.data
+        if form.category.data:
+            event.category=form.category.data
         event.creater=current_user
         print(event.id)
         db.session.commit()
-        print(form.end_time.data)
         flash('Your changes have been saved')
         return redirect(url_for('event', id=id))
     elif request.method =='GET':
@@ -144,6 +151,7 @@ def edit_event(id):
         form.end_time.data = event.end_time
         form.address.data = event.address
         form.zipcode.data = event.zipcode
+        form.category.data = event.category
 
     return render_template('add_events.html', title='Edit Event', form=form)
 
@@ -214,7 +222,7 @@ def edit_profile():
         current_user.about_me = form.about_me.data
         db.session.commit()
         flash('Your changes have been saved')
-        return redirect(url_for('edit_profile'))
+        return redirect(url_for('user',username=current_user.username))
     elif request.method =='GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me

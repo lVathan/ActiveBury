@@ -84,6 +84,7 @@ class Event(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     address = db.Column(db.String(140))
     zipcode = db.Column(db.Integer)
+    category = db.Column(db.String(64))
     posts = db.relationship('Post', backref='topic', lazy='dynamic')
 
 

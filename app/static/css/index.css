@@ -13,12 +13,23 @@
     flex-direction: column;
     padding-left: 0.5em;
     border: 1px lightgreen;
-    background-color: lightblue;
-
 }
-.day_event_list > li {
+
+.day_event_list > h3 {
+    text-decoration: underline;
+}
+
+
+.day_event_list > ul {
     display: grid;
     border: 1px lightgreen;
-    background-color: lightblue;
+}
+
+.page_header {
+    display: flex;
+    white-space: nowrap;
+
+}
+.button {
 
 }

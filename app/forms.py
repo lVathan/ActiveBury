@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms import TextAreaField, IntegerField, DateTimeField
+from wtforms import TextAreaField, IntegerField, DateTimeField, SelectField
 #from wtforms.fields.html5 import DateField
 from wtforms_components import DateTimeField, TimeField, DateField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length, Optional
@@ -65,4 +65,7 @@ class EventForm(FlaskForm):
     end_time = TimeField('End Time', format="%H:%M", validators=[Optional()])
     address = StringField('Address', validators=[Optional()])
     zipcode = IntegerField('Zipcode', validators=[Optional()])
+    category = SelectField('Category', choices=[('General', 'general'),
+        ('Sports', 'sport'), ('Family', 'family'), ('Social', 'social'),
+        ('Cultural', 'cultural')])
     submit = SubmitField('Register')
