@@ -50,7 +50,7 @@ a, a:link    {
         "header header header"
         "nav content side"
         "footer footer footer";
-    grid-template-columns: 0.3fr auto 0.2fr ;
+    grid-template-columns: 0.2fr auto 0.2fr ;
     grid-template-rows: 100px 1fr auto;
     grid-gap: 10px;
 

@@ -17,25 +17,89 @@
 
 	<div class="day_events">
 		{% for count in day_count %}
-		<div class = "day_event_list">
-				<h3> {{ moment(days[count]).format('dddd') }}</h3>
-			<ul>
-				{% for ev in events[count] %}
-				{% if ev.title %}
-				<li>
-					<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
-					{% if ev.start_time %}
-						{{ ev.start_time.strftime('%I:%M %p') }}
-					{% endif %}
-				{% endif %}
+			<div class = "day_event_list">
+				<div>
+					<h3>{{ moment(days[count]).format('dddd') }}</h3>
+					<p>{{ moment(days[count]).format('L') }}</p>
+				</div>
+				<div class='generalevents'>
+					<ul>
+						{% for ev in general_events[count] %}
+							{% if ev.title %}
+								<li>
+								<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
+								{% if ev.start_time %}
+									{{ ev.start_time.strftime('%I:%M %p') }}
+								{% endif %}
+							{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
 
-				</li>
-				{% endfor %}
-			</ul>
-		</div>
+				<div class='sportevents'>
+					<ul>
+						{% for ev in sport_events[count] %}
+							{% if ev.title %}
+								<li>
+								<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
+								{% if ev.start_time %}
+									{{ ev.start_time.strftime('%I:%M %p') }}
+								{% endif %}
+							{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				<div class='familyevents'>
+					<ul>
+						{% for ev in family_events[count] %}
+							{% if ev.title %}
+								<li>
+								<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
+								{% if ev.start_time %}
+									{{ ev.start_time.strftime('%I:%M %p') }}
+								{% endif %}
+							{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				<div class='socialevents'>
+					<ul>
+						{% for ev in social_events[count] %}
+							{% if ev.title %}
+								<li>
+								<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
+								{% if ev.start_time %}
+									{{ ev.start_time.strftime('%I:%M %p') }}
+								{% endif %}
+							{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				<div class='culturalevents'>
+					<ul>
+						{% for ev in cultural_events[count] %}
+							{% if ev.title %}
+								<li>
+								<a href="{{ url_for('event', id=ev.id) }}">{{ ev.title }}</a>
+								{% if ev.start_time %}
+									{{ ev.start_time.strftime('%I:%M %p') }}
+								{% endif %}
+							{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
 		{% endfor %}
-
 	</div>
+
 	{% for post in posts %}
 		{% include '_post.html' %}
 	{% endfor %}

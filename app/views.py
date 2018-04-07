@@ -42,18 +42,33 @@ def before_request():
 @app.route('/index')
 @login_required
 def index():
-#    event = Event.query.filter_by(id=int(id)).first_or_404()
     days=[]
     next_days=[]
-    week_events=[0,1,2,3,4,5]
+    week_general_events=[0,1,2,3,4,5]
+    week_sport_events=[0,1,2,3,4,5]
+    week_family_events=[0,1,2,3,4,5]
+    week_social_events=[0,1,2,3,4,5]
+    week_cultural_events=[0,1,2,3,4,5]
+
     for day in range(5):
         days.append(datetime.datetime.now()+datetime.timedelta(days=day))
         next_days.append(datetime.datetime.now()+datetime.timedelta(days=day+1))
-        #days.append(days[0]+datetime.timedelta(days=(day+1)))
-        print(days[day].date())
-        week_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-            Event.start_date <= next_days[day].date()).all()
-
+        week_general_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+                Event.start_date <= next_days[day].date(),\
+                 Event.category == 'general').order_by(Event.start_time).all()
+        week_sport_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+                Event.start_date <= next_days[day].date(),\
+                 Event.category == 'sport').order_by(Event.start_time).all()
+        week_family_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+                Event.start_date <= next_days[day].date(),\
+                 Event.category == 'family').order_by(Event.start_time).all()
+        week_social_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+                Event.start_date <= next_days[day].date(),\
+                 Event.category == 'social').order_by(Event.start_time).all()
+        week_cultural_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+                Event.start_date <= next_days[day].date(),\
+                 Event.category == 'cultural').order_by(Event.start_time).all()
+    print(week_general_events[0])
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -61,8 +76,18 @@ def index():
         if posts.has_next else None
     prev_url = url_for('explore', page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('index.html', title='Explore', events = week_events,
-        posts=posts.items, next_url=next_url, days=days, prev_url=prev_url, day_count=range(5))
+    return render_template('index.html',
+                            title='Explore',
+                            general_events = week_general_events,
+                            sport_events = week_sport_events,
+                            family_events = week_family_events,
+                            social_events = week_social_events,
+                            cultural_events = week_cultural_events,
+                            posts=posts.items,
+                            next_url=next_url,
+                            days=days,
+                            prev_url=prev_url,
+                            day_count=range(5))
 
 @app.route('/add_events', methods=['GET', 'POST'])
 @login_required
@@ -75,12 +100,14 @@ def add_events():
                 start_time=form.start_time.data,
                 end_date=form.end_date.data,
                 end_time=form.end_time.data,
-                address=form.address.data, zipcode=form.zipcode.data,
+                address=form.address.data,
+                zipcode=form.zipcode.data,
+                category=form.category.data,
                 creater=current_user)
         db.session.add(event)
         db.session.commit()
         flash('Your event has been added to the calendar')
-        return redirect(url_for('calendar'))
+        return redirect(url_for('index'))
     return render_template('add_events.html', title='Add Events', form=form)
 
 @app.route('/event/<id>', methods=['GET', 'POST'])

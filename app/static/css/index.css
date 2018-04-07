@@ -2,8 +2,9 @@
     display: grid;
     grid-gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(100px, 0.9fr));
-    grid-template-rows: repeat(5, minmax(100px,0.9fr));
+    grid-template-rows: (auto, minmax(100px,0.9fr));
     justify-content: center;
+    padding-bottom: 10vh;
 
 
 }
@@ -12,7 +13,6 @@
     flex: 1;
     flex-direction: column;
     padding-left: 0.5em;
-    border: 1px lightgreen;
 }
 
 .day_event_list > h3 {
@@ -20,9 +20,24 @@
 }
 
 
-.day_event_list > ul {
-    display: grid;
-    border: 1px lightgreen;
+.generalevents {
+    background-color: lightgreen;
+}
+
+.sportevents {
+    background-color: lightblue;
+}
+
+.familyevents {
+    background-color: lightyellow;
+}
+
+.socialevents {
+    background-color: lightcoral;
+}
+
+.culturalevents {
+    background-color: lightsalmon;
 }
 
 .page_header {
@@ -32,4 +47,8 @@
 }
 .button {
 
+}
+
+.ul {
+    padding:0;
 }

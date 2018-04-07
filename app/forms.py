@@ -65,7 +65,7 @@ class EventForm(FlaskForm):
     end_time = TimeField('End Time', format="%H:%M", validators=[Optional()])
     address = StringField('Address', validators=[Optional()])
     zipcode = IntegerField('Zipcode', validators=[Optional()])
-    category = SelectField('Category', choices=[('General', 'general'),
-        ('Sports', 'sport'), ('Family', 'family'), ('Social', 'social'),
-        ('Cultural', 'cultural')])
+    category = SelectField('Category', choices=[('general', 'General'),
+        ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
+        ('cultural', 'Cultural')])
     submit = SubmitField('Register')
