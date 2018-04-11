@@ -7,8 +7,9 @@ from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import Required
+from flask_uploads import UploadSet, IMAGES, configure_uploads, patch_request_class
+#from wtforms import StringField, SubmitField
+#from wtforms.validators import Required
 
 from logging.handlers import RotatingFileHandler, SMTPHandler
 import os
@@ -24,6 +25,9 @@ login = LoginManager(app)
 login.login_view = 'login'
 manager = Manager(app)
 moment = Moment(app)
+images = UploadSet('images', IMAGES)
+configure_uploads(app, images)
+patch_request_class(app)
 
 #from app import views, models
 

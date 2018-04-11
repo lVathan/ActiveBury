@@ -5,3 +5,4 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATION = True
     POSTS_PER_PAGE = 3
+    UPLOADS_DEFAULT_DEST = os.environ.get('UPLOAD_FOLDER')

@@ -4,9 +4,9 @@ from flask import request
 from flask import render_template
 from flask import session, redirect,url_for, flash, jsonify
 from datetime import datetime
-#import datetime
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.urls import url_parse
+from werkzeug.utils import secure_filename
 
 import sys
 import os.path
@@ -25,9 +25,10 @@ from wtforms.validators import Required
 
 from app import app
 from app import db
+from app import images
 from app.weather import *
 from app.events_calendar import *
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, PhotoUploadForm
 from app.forms import EventForm
 from app.models import User, Post, Event
 
@@ -40,7 +41,6 @@ def before_request():
 
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
     days=[]
     next_days=[]
@@ -68,13 +68,13 @@ def index():
         week_cultural_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
                 Event.start_date <= next_days[day].date(),\
                  Event.category == 'cultural').order_by(Event.start_time).all()
-    print(week_general_events[0])
+
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('explore', page=posts.next_num) \
+    next_url = url_for('index', page=posts.next_num) \
         if posts.has_next else None
-    prev_url = url_for('explore', page=posts.prev_num) \
+    prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
     return render_template('index.html',
                             title='Explore',
@@ -123,13 +123,13 @@ def event(id):
         flash('Your post is now live')
         return redirect(url_for('event', id=id))
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(id=int(id)).order_by(Post.timestamp.desc()).paginate(
+    posts = Post.query.filter(Post.topic_id==int(id)).order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('explore', page=posts.next_num) \
         if posts.has_next else None
     prev_url = url_for('explore', page=posts.prev_num) \
         if posts.has_prev else None
-    print(event.zipcode)
+    print(event.image_url)
     return render_template('event.html', form=form, event=event, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 @app.route('/about')
@@ -285,10 +285,6 @@ def unfollow(username):
     flash('You are not following {}!'.format(username))
     return redirect(url_for('user', username=username))
 
-@app.route('/resume')
-def resume():
-    return render_template('resume.html')
-
 
 @app.route('/weather')
 def weather():
@@ -309,6 +305,21 @@ def calendar():
     events=event_reader()
     return render_template('calendar.html', events=events)
 
+@app.route('/upload/<id>', methods = ['GET', 'POST'])
+@login_required
+def upload(id):
+    event=Event.query.filter_by(id=int(id)).first_or_404()
+    form = PhotoUploadForm()
+    if form.validate_on_submit():
+        name_path='event/eventphoto_{}.'.format(event.id)
+
+        f = form.event_photo.data
+        filename = images.save(request.files['event_photo'],
+                name=name_path)
+        event.image_url=images.url(filename)
+        db.session.commit()
+        return redirect(url_for('event', id=id))
+    return render_template('upload.html', form=form)
 
 @app.errorhandler(404)
 def page_not_found(e):

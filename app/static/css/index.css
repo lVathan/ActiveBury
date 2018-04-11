@@ -13,6 +13,8 @@
     flex: 1;
     flex-direction: column;
     padding-left: 0.5em;
+    padding-bottom: 0em;
+    padding-top: 0em;
 }
 
 .day_event_list > h3 {

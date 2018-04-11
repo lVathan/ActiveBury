@@ -57,9 +57,9 @@ class User(UserMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
 
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+    @login.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
 
 
 
@@ -86,6 +86,8 @@ class Event(db.Model):
     zipcode = db.Column(db.Integer)
     category = db.Column(db.String(64))
     posts = db.relationship('Post', backref='topic', lazy='dynamic')
+    image_url = db.Column(db.String(140), default=None, nullable=True)
+
 
 
     def __repr__(self):

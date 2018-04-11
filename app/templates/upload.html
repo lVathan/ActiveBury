@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <div class="loginform">
+    <h1> Upload a Picture </h1>
+    <form action="" method="post" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.event_photo.label }}:<br>
+        {{ form.event_photo(size=32) }}<br>
+        {% for error in form.event_photo.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p> {{ form.submit }} </p>
+		</form>
+  </div>
+{% endblock %}

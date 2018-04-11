@@ -6,6 +6,11 @@
 	<table>
 		<tr valign="top">
 			<td>
+				{% if event.image_url %}
+					<img src="{{ event.image_url }}" style="width:30vh;height:30vh;">
+				{% endif %}
+			</td>
+			<td>
 				<h1>Event: {{ event.title }}</h1>
 				{% if event.description %}<p>Description: {{ event.description }}</p>{% endif %}
 				{% if event.start_date %}<p>Start Date: {{ event.start_date.strftime('%B %d, %Y') }}</p>{% endif %}
@@ -18,6 +23,9 @@
 				{% if event.creater == current_user %}
 				<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
 				{% endif %}
+			</td>
+			<td>
+				<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
 			</td>
 		</tr>
 	</table><br>

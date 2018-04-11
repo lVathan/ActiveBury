@@ -4,8 +4,13 @@ from wtforms import TextAreaField, IntegerField, DateTimeField, SelectField
 #from wtforms.fields.html5 import DateField
 from wtforms_components import DateTimeField, TimeField, DateField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length, Optional
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+
+
 from app.models import User
+from app import images
 from datetime import datetime
+
 
 
 class LoginForm(FlaskForm):
@@ -69,3 +74,10 @@ class EventForm(FlaskForm):
         ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
         ('cultural', 'Cultural')])
     submit = SubmitField('Register')
+
+class PhotoUploadForm(FlaskForm):
+    event_photo = FileField('images', validators=[
+            FileRequired(),
+            FileAllowed(images, 'Images only!')
+            ])
+    submit = SubmitField('Upload')

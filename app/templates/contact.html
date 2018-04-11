@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block app_content %}
+
+<h3> Contact Us </h3>
+<p> email questions or concerns to me@nathancordrey.com </p>
+
+{% endblock %}
