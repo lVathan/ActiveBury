@@ -22,10 +22,8 @@
 				{% if event.category %}<p>Category: {{ event.category }} </p>{% endif %}
 				{% if event.creater == current_user %}
 				<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
-				{% endif %}
-			</td>
-			<td>
 				<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
+				{% endif %}
 			</td>
 		</tr>
 	</table><br>

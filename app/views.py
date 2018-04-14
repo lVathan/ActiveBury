@@ -28,7 +28,7 @@ from app import db
 from app import images
 from app.weather import *
 from app.events_calendar import *
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, PhotoUploadForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, PhotoUploadForm, PasswordChangeForm
 from app.forms import EventForm
 from app.models import User, Post, Event
 
@@ -70,8 +70,8 @@ def index():
                  Event.category == 'cultural').order_by(Event.start_time).all()
 
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, app.config['POSTS_PER_PAGE'], False)
+    posts = Post.query.order_by(Post.timestamp.desc()).\
+        paginate(page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('index', page=posts.next_num) \
         if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) \
@@ -111,7 +111,6 @@ def add_events():
     return render_template('add_events.html', title='Add Events', form=form)
 
 @app.route('/event/<id>', methods=['GET', 'POST'])
-@login_required
 def event(id):
     user = current_user
     form = PostForm()
@@ -129,7 +128,6 @@ def event(id):
         if posts.has_next else None
     prev_url = url_for('explore', page=posts.prev_num) \
         if posts.has_prev else None
-    print(event.image_url)
     return render_template('event.html', form=form, event=event, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 @app.route('/about')
@@ -143,12 +141,9 @@ def contact():
 @app.route('/edit_event/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_event(id):
-
     form = EventForm()
     event=Event.query.filter_by(id=int(id)).first_or_404()
-    print(event.id)
-    if form.validate_on_submit():
-        print('hello')
+    if form.validate_on_submit() and event.creater==current_user:
         event.title = form.title.data
         event.description=form.description.data
         event.start_date=form.start_date.data
@@ -164,7 +159,6 @@ def edit_event(id):
             event.zipcode=form.zipcode.data
         if form.category.data:
             event.category=form.category.data
-        event.creater=current_user
         print(event.id)
         db.session.commit()
         flash('Your changes have been saved')
@@ -179,6 +173,8 @@ def edit_event(id):
         form.address.data = event.address
         form.zipcode.data = event.zipcode
         form.category.data = event.category
+    else:
+        return redirect(url_for('event', id=id))
 
     return render_template('add_events.html', title='Edit Event', form=form)
 
@@ -218,6 +214,21 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/password_change', methods=['GET', 'POST'])
+@login_required
+def password_change():
+    user = current_user
+    form = PasswordChangeForm()
+    if form.validate_on_submit():
+        if user is None or not user.check_password(form.current_password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('password_change'))
+        user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('Password updated!')
+        return redirect(url_for('index'))
+    return(render_template('password_change.html', form=form))
 
 @app.route('/user/<username>')
 @login_required

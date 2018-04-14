@@ -20,7 +20,22 @@ def event_reader():
     ]
     events2 = Event.query.all()
     for e in events2:
+        color="blue"
         event_date_time=datetime.datetime.combine(e.start_date,e.start_time)
-        events.append(dict({'start': str(event_date_time), 'title': e.title, 'url':'/event/{}'.format(e.id)}))
+        if e.category == "general":
+            color = "lightgreen"
+        elif e.category == "sport":
+            color = "lightblue"
+        elif e.category == "family":
+            color = "lightyellow"
+        elif e.category == "social":
+            color = "lighcoral"
+        elif e.category == "cultural":
+            color = "lightsalmon"
+        else:
+            color="blue"
+
+        events.append(dict({'start': str(event_date_time), 'title': e.title,
+                'color': color, 'textColor': 'black', 'url':'/event/{}'.format(e.id)}))
 
     return events
