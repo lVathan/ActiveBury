@@ -105,6 +105,7 @@ def add_events():
                 category=form.category.data,
                 creater=current_user)
         db.session.add(event)
+        current_user.subscribe(event)
         db.session.commit()
         flash('Your event has been added to the calendar')
         return redirect(url_for('index'))
@@ -234,13 +235,7 @@ def password_change():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live')
-        return redirect(url_for('user', username=username))
+    sub_events=user.subscribed_events().limit(7)
     page = request.args.get('page', 1, type=int)
     posts = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -248,8 +243,9 @@ def user(username):
         if posts.has_next else None
     prev_url = url_for('user', username=user.username, page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('user.html', user=user, form=form, posts=posts.items,
-                            next_url=next_url, prev_url=prev_url)
+    return render_template('user.html', user=user, posts=posts.items,
+                            events=sub_events,next_url=next_url,
+                            prev_url=prev_url)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -296,14 +292,35 @@ def unfollow(username):
     flash('You are not following {}!'.format(username))
     return redirect(url_for('user', username=username))
 
+@app.route('/event/subscribe/<id>')
+@login_required
+def subscribe(id):
+    event = Event.query.filter_by(id=id).first()
+    if event is None:
+        flash('Event not found.')
+        return redirect(url_for('index'))
+    if current_user.is_subscribed(event):
+        flash('You are already subscribed')
+        return redirect(url_for('event', id=id))
+    current_user.subscribe(event)
+    db.session.commit()
+    flash('You are now subscribed to {}'.format(event.title))
+    return redirect(url_for('event', id=id))
 
-@app.route('/weather')
-def weather():
-    weather = current_weather(4373554)
-    hour_forecast = hourly_forecast(4373554)
-    five_forecast = five_day_forecast(4373554)
-
-    return render_template('weather.html', weather=weather, hour_forecast=hour_forecast, five_forecast=five_forecast)
+@app.route('/event/unsubscribe/<id>')
+@login_required
+def unsubscribe(id):
+    event = Event.query.filter_by(id=id).first()
+    if event is None:
+        flash('Event not found.')
+        return redirect(url_for('index'))
+    if not current_user.is_subscribed(event):
+        flash('You are already unsubscribed')
+        return redirect(url_for('event', id=id))
+    current_user.unsubscribe(event)
+    db.session.commit()
+    flash('You are now unsubscribed to {}'.format(event.title))
+    return redirect(url_for('event', id=id))
 
 
 @app.route('/event_data')

@@ -1,0 +1,33 @@
+.user_container {
+    display: grid;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr;
+    grid-template-rows: 20em 20em;
+    justify-content: left;
+    padding-bottom: 10vh;
+}
+
+
+.user_container > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.events {
+    grid-column:3/-1;
+    align-content: center;
+    padding-left: 1em;
+}
+.image {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    padding-right: 1em;
+}
+
+.info {
+    grid-column-start: 2;
+    grid-column-end: 2;
+}
+
+.posts {
+    grid-column: 1/3;
+}

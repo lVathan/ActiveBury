@@ -9,7 +9,7 @@
       <a href="{{ url_for('user', username=post.author.username) }}">
         {{ post.author.username }}
       </a>
-      commented {{ moment(post.timestamp).fromNow() }}:
+      commented {{ moment(post.timestamp).fromNow() }} on {{ post.topic.title }}:
       <br>
       {{ post.body }}
     </td>

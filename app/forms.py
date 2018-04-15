@@ -7,6 +7,7 @@ from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Le
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
+
 from app.models import User
 from app import images
 from datetime import datetime
@@ -76,10 +77,10 @@ class EventForm(FlaskForm):
     end_date = DateField('End Date', format="%Y-%m-%d", validators=[Optional()])
     end_time = TimeField('End Time', format="%H:%M", validators=[Optional()])
     address = StringField('Address', validators=[Optional()])
-    zipcode = IntegerField('Zipcode', validators=[Optional()])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
     category = SelectField('Category', choices=[('general', 'General'),
         ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
-        ('cultural', 'Cultural')])
+        ('cultural', 'Cultural')], default=1)
     submit = SubmitField('Register')
 
 class PhotoUploadForm(FlaskForm):
