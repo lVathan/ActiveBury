@@ -7,7 +7,7 @@ from datetime import datetime
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
-
+import urllib.request
 import sys
 import os.path
 import json
@@ -28,7 +28,7 @@ from app import db
 from app import images
 from app.weather import *
 from app.events_calendar import *
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, PhotoUploadForm, PasswordChangeForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, PhotoUploadForm, PasswordChangeForm, SearchForm
 from app.forms import EventForm
 from app.models import User, Post, Event
 
@@ -40,34 +40,34 @@ def before_request():
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/index', methods=['GET', 'POST'])
 def index():
-    days=[]
-    next_days=[]
-    week_general_events=[0,1,2,3,4,5]
-    week_sport_events=[0,1,2,3,4,5]
-    week_family_events=[0,1,2,3,4,5]
-    week_social_events=[0,1,2,3,4,5]
-    week_cultural_events=[0,1,2,3,4,5]
+    zipcode=21804
+    distance=100
+    if current_user.is_authenticated:
+        zipcode=current_user.last_search
+    form = SearchForm()
+    if form.validate_on_submit():
+        zipcode=form.zipcode.data
+        distance=form.distance.data
+        current_user.last_search = zipcode
+        db.session.commit()
+    elif request.method =='GET':
+        form.zipcode.data = zipcode
+        form.distance.data = distance
+    zip = zip_info(zipcode)
+    print(distance)
+    events=[]
+    events = day_event_reader(zipcode, distance)
+    week_general_events=events[0]
+    week_sport_events=events[1]
+    week_family_events=events[2]
+    week_social_events=events[3]
+    week_cultural_events=events[4]
+    days=events[5]
+    day_count=[]
 
-    for day in range(5):
-        days.append(datetime.datetime.now()+datetime.timedelta(days=day))
-        next_days.append(datetime.datetime.now()+datetime.timedelta(days=day+1))
-        week_general_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
-                 Event.category == 'general').order_by(Event.start_time).all()
-        week_sport_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
-                 Event.category == 'sport').order_by(Event.start_time).all()
-        week_family_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
-                 Event.category == 'family').order_by(Event.start_time).all()
-        week_social_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
-                 Event.category == 'social').order_by(Event.start_time).all()
-        week_cultural_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
-                 Event.category == 'cultural').order_by(Event.start_time).all()
+
 
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).\
@@ -77,7 +77,7 @@ def index():
     prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
     return render_template('index.html',
-                            title='Explore',
+                            zip=zip,
                             general_events = week_general_events,
                             sport_events = week_sport_events,
                             family_events = week_family_events,
@@ -87,7 +87,8 @@ def index():
                             next_url=next_url,
                             days=days,
                             prev_url=prev_url,
-                            day_count=range(5))
+                            day_count=range(5),
+                            form=form)
 
 @app.route('/add_events', methods=['GET', 'POST'])
 @login_required
@@ -325,13 +326,33 @@ def unsubscribe(id):
 
 @app.route('/event_data')
 def return_events():
-    events=event_reader()
+    events=event_reader(21804,30)
     return jsonify(events)
 
-@app.route('/calendar')
+
+@app.route('/event_data/<zipcode>/<radius>')
+def return_events_radius(zipcode, radius):
+    events=event_reader(zipcode,radius)
+    return jsonify(events)
+
+
+@app.route('/calendar', methods = ['GET', 'POST'])
 def calendar():
-    events=event_reader()
-    return render_template('calendar.html', events=events)
+    zipcode=21804
+    distance=100
+    if current_user.is_authenticated:
+        zipcode=current_user.last_search
+    form = SearchForm()
+    if form.validate_on_submit():
+        zipcode=form.zipcode.data
+        distance=form.distance.data
+        current_user.last_search=zipcode
+        db.session.commit()
+    elif request.method =='GET':
+        form.zipcode.data = zipcode
+        form.distance.data = distance
+    print(zipcode)
+    return render_template('calendar.html', form=form, zipcode=zipcode, distance=distance)
 
 @app.route('/upload/<id>', methods = ['GET', 'POST'])
 @login_required

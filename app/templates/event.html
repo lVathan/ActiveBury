@@ -20,13 +20,15 @@
 				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
 				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}
 				{% if event.category %}<p>Category: {{ event.category }} </p>{% endif %}
-				{% if event.creater == current_user %}
-				<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
-				<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
-				{% elif current_user.is_subscribed(event) %}
-				<p><a href="{{ url_for('unsubscribe', id=event.id) }}">Unsubscribe</a></p>
-				{% else %}
-				<p><a href="{{ url_for('subscribe', id=event.id) }}">Subscribe</a></p>
+				{% if current_user.is_authenticated %}
+					{% if event.creater == current_user %}
+					<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
+					<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
+					{% elif current_user.is_subscribed(event) %}
+					<p><a href="{{ url_for('unsubscribe', id=event.id) }}">Unsubscribe</a></p>
+					{% else %}
+					<p><a href="{{ url_for('subscribe', id=event.id) }}">Subscribe</a></p>
+					{% endif %}
 				{% endif %}
 				<p>{{ event.subscribers.count() }} subscribers</p>
 			</td>

@@ -80,7 +80,7 @@ class EventForm(FlaskForm):
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
     category = SelectField('Category', choices=[('general', 'General'),
         ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
-        ('cultural', 'Cultural')], default=1)
+        ('cultural', 'Cultural')], default='general')
     submit = SubmitField('Register')
 
 class PhotoUploadForm(FlaskForm):
@@ -89,3 +89,9 @@ class PhotoUploadForm(FlaskForm):
             FileAllowed(images, 'Images only!')
             ])
     submit = SubmitField('Upload')
+
+class SearchForm(FlaskForm):
+    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    distance = SelectField('Distance', choices=[('100', '100'), ('30', '30'),
+        ('10', '10')], default='30')
+    submit = SubmitField('Search')

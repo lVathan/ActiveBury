@@ -161,7 +161,7 @@ footer {
         grid-template-columns: 1fr;
         grid-template-rows:
             auto
-            minmax(25px, auto)/* Nav*/
+            minmax(0.1fr, auto)/* Nav*/
             1fr/* Content*/
             minmax(25px, auto)/*Sidebar*/
             auto;/*Footer*/

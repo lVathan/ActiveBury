@@ -25,6 +25,7 @@ class User(UserMixin, db.Model):
     events = db.relationship('Event', backref='creater', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    last_search = db.Column(db.Integer, default=21804)
     subscribed = db.relationship('Event', secondary=subscriptions,
 
         backref = db.backref('subscribers', lazy='dynamic'),

@@ -14,6 +14,32 @@
 
 {% endblock %}
 
+
+{% block navbar %}
+	<div>
+		<h1> Search </h1>
+		<form class="searchform" action="" method="post">
+			{{ form.hidden_tag() }}
+			<div>
+				{{ form.zipcode.label }}:
+				{{ form.zipcode(size=24) }}<br>
+				{% for error in form.zipcode.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</div>
+			<p>
+				{{ form.distance.label }}:
+				{{ form.distance(size=1) }}<br>
+				{% for error in form.distance.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p> {{form.submit }} </p>
+	</div>
+{%- endblock navbar %}
+
+
+
 {%block app_content %}
 <div class="page_header">
 <nobr><h1>Calendar</h1>
@@ -52,7 +78,7 @@
       editable: true,
       eventLimit: true, // allow "more" link when too many events
       events: {
-				url: '/event_data',
+				url: '/event_data/{{ zipcode }}/{{ distance }}',
 				error: function() {
 						$('#script-warning').show();
 				}

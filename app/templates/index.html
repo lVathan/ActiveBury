@@ -2,17 +2,40 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %} Nathan {% endblock %}
+{% block title %} Active Bury {% endblock %}
 
 {%- block styles %}
 {{ super() }}
 <link rel="stylesheet" href="/static/css/index.css"</>
 {%- endblock styles %}
 
+{% block navbar %}
+	<div>
+		<h1> Search </h1>
+		<form class="searchform" action="" method="post">
+			{{ form.hidden_tag() }}
+			<div>
+				{{ form.zipcode.label }}:
+				{{ form.zipcode(size=24) }}<br>
+				{% for error in form.zipcode.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</div>
+			<p>
+				{{ form.distance.label }}:
+				{{ form.distance(size=1) }}<br>
+				{% for error in form.distance.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p> {{form.submit }} </p>
+	</div>
+{%- endblock navbar %}
+
 {%block app_content %}
 	<div class="page_header">
-		{% if current_user.username %}
-			<h1>Hello, {{ current_user.username }}!</h1>
+		{% if zip[0] %}
+			<h1>The top events near {{ zip[0] }}, {{ zip[1] }}!</h1>
 		{% else %}
 			<h1>Hello stranger!</h1>
 			<a href={{ url_for('register') }} class=button>Sign Up</a>

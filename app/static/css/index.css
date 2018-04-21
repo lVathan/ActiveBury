@@ -21,6 +21,10 @@
     text-decoration: underline;
 }
 
+.searchform {
+    display: grid;
+    align-content: center;
+}
 
 .generalevents {
     background-color: lightgreen;
@@ -53,4 +57,10 @@
 
 .ul {
     padding:0;
+}
+
+@media(max-width: 768px) {
+    .searchform{
+        display: flex;
+    }
 }
