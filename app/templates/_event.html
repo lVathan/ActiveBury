@@ -1,0 +1,19 @@
+<table class="table table-hover">
+  <tr>
+    <td width="70px">
+      {% if event.image_url %}
+      <a href="{{ url_for('event', id=event.id) }}">
+        <img src="{{ event.image_url }}" style="width:10vh;height:10vh;">
+      </a>
+      {% endif %}
+    </td>
+    <td>
+      <a href="{{ url_for('event', id=event.id) }}">
+        {{ event.title }}
+      </a>
+      occurs {{ moment(event.start_date).fromNow() }}:
+      <br>
+      {{ event.description }}
+    </td>
+  </tr>
+</table>

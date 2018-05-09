@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms import TextAreaField, IntegerField, DateTimeField, SelectField
+from wtforms import TextAreaField, IntegerField, DateTimeField, SelectField, SelectMultipleField
+from wtforms import widgets
 #from wtforms.fields.html5 import DateField
 from wtforms_components import DateTimeField, TimeField, DateField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length, Optional
@@ -94,4 +95,21 @@ class SearchForm(FlaskForm):
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
     distance = SelectField('Distance', choices=[('100', '100'), ('30', '30'),
         ('10', '10')], default='30')
+    submit = SubmitField('Search')
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
+
+
+class AdvancedSearchForm(FlaskForm):
+    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    distance = SelectField('Distance', choices=[('100', '100'), ('30', '30'),
+        ('10', '10')], default='30')
+    start_date = DateField('Start Date', format="%Y-%m-%d",
+                default=datetime.today, validators=[DataRequired()])
+    end_date = DateField('End Date', format="%Y-%m-%d", validators=[Optional()])
+    category = MultiCheckboxField('Category', choices=[('general', 'General'),
+        ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
+        ('cultural', 'Cultural')], default='general')
     submit = SubmitField('Search')

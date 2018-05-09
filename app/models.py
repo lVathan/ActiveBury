@@ -86,7 +86,16 @@ class User(UserMixin, db.Model):
         return Event.query\
             .join(subscriptions, (subscriptions.c.event_id == Event.id))\
             .filter(subscriptions.c.user_id == self.id)\
+            .filter(Event.start_date >= datetime.now())\
             .order_by(Event.start_date)
+
+    def past_events(self):
+        return Event.query\
+            .join(subscriptions, (subscriptions.c.event_id == Event.id))\
+            .filter(subscriptions.c.user_id == self.id)\
+            .filter(Event.start_date < datetime.now())\
+            .order_by(Event.start_date)
+
 
 
     @login.user_loader
@@ -126,3 +135,9 @@ class Event(db.Model):
 
     def subscriber_count(self):
         return self.subscribers.count()
+
+
+    def delete_event(self, user):
+        if user == self.creater:
+            db.session.delete(self)
+            db.session.commit()

@@ -21,9 +21,17 @@
 			{% endif %}
 		</div>
 		<div class="events">
-			<h2> My Events </h2>
+			<h2> Upcoming Events </h2>
 			<ul>
 				{% for ev in events %}
+					<li><a href={{url_for('event', id=ev.id) }}>{{ ev.title }}</a></p>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="events">
+			<h2> Past Events </h2>
+			<ul>
+				{% for ev in past_events %}
 					<li><a href={{url_for('event', id=ev.id) }}>{{ ev.title }}</a></p>
 				{% endfor %}
 			</ul>

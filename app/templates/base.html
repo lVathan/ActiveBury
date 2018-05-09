@@ -18,6 +18,7 @@
 				<h1>Active Bury</h1>
 				<li><a href="{{ url_for('index') }}">Home</a></li>
 				<li><a href="{{ url_for('calendar') }}">Calendar</a></li>
+				<li><a href="{{ url_for('advanced_search') }}">Search</a></li>
 				{% if current_user.is_anonymous %}
 				<li class="log"><a href="{{ url_for('login')}}">Login</a></li>
 				{% else %}

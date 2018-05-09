@@ -49,6 +49,15 @@ def event_reader(zipcode, radius):
                 'color': color, 'textColor': 'black', 'url':'/event/{}'.format(e.id)}))
     return events
 
+def advanced_search_reader(zipcode, radius, start_date, end_date, category):
+    zips = zipsearch(zipcode, radius)
+    return Event.query\
+        .filter(Event.zipcode.in_(zips))\
+        .filter(Event.start_date >= start_date)\
+        .filter(Event.start_date <= end_date)\
+        .filter(Event.category.in_(category))\
+        .order_by(Event.start_date)
+
 
 def day_event_reader(zipcode, radius):
     days=[]

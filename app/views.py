@@ -29,7 +29,7 @@ from app import images
 from app.weather import *
 from app.events_calendar import *
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, PhotoUploadForm, PasswordChangeForm, SearchForm
-from app.forms import EventForm
+from app.forms import EventForm, AdvancedSearchForm
 from app.models import User, Post, Event
 
 @app.before_request
@@ -180,6 +180,30 @@ def edit_event(id):
 
     return render_template('add_events.html', title='Edit Event', form=form)
 
+@app.route('/search', methods=['GET', 'POST'])
+def advanced_search():
+    form=AdvancedSearchForm()
+    zipcode=21804
+    distance=30
+    start_date=datetime.datetime.now()
+    end_date= start_date+ datetime.timedelta(15,0)
+    category=['general']
+    if form.validate_on_submit():
+        zipcode = form.zipcode.data
+        distance = form.distance.data
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        category = form.category.data
+    elif request.method == 'GET':
+        form.zipcode.data = zipcode
+        form.distance.data = distance
+        form.start_date.data = start_date
+        form.end_date.data = end_date
+        form.category.data = category
+    print(category)
+    events = advanced_search_reader(zipcode, distance, start_date, end_date, category)
+    return render_template('search.html', events=events, form=form)
+
 
 @app.route('/login', methods =['GET', 'POST'])
 def login():
@@ -237,6 +261,7 @@ def password_change():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     sub_events=user.subscribed_events().limit(7)
+    past_events=user.past_events().limit(5)
     page = request.args.get('page', 1, type=int)
     posts = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -244,8 +269,12 @@ def user(username):
         if posts.has_next else None
     prev_url = url_for('user', username=user.username, page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('user.html', user=user, posts=posts.items,
-                            events=sub_events,next_url=next_url,
+    return render_template('user.html',
+                            user=user,
+                            events=sub_events,
+                            past_events=past_events,
+                            posts=posts.items,
+                            next_url=next_url,
                             prev_url=prev_url)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -329,6 +358,13 @@ def return_events():
     events=event_reader(21804,30)
     return jsonify(events)
 
+@app.route('/event/delete/<id>')
+@login_required
+def delete_events(id):
+    event=Event.query.filter_by(id=int(id)).first_or_404()
+    event.delete_event(current_user)
+    flash('Event deleted')
+    return redirect(url_for('index'))
 
 @app.route('/event_data/<zipcode>/<radius>')
 def return_events_radius(zipcode, radius):
@@ -353,6 +389,24 @@ def calendar():
         form.distance.data = distance
     print(zipcode)
     return render_template('calendar.html', form=form, zipcode=zipcode, distance=distance)
+
+@app.route('/list', methods = ['GET', 'POST'])
+def list_search():
+    zipcode=21804
+    distance=100
+    if current_user.is_authenticated:
+        zipcode=current_user.last_search
+    form = SearchForm()
+    if form.validate_on_submit():
+        zipcode=form.zipcode.data
+        distance=form.distance.data
+        current_user.last_search=zipcode
+        db.session.commit()
+    elif request.method =='GET':
+        form.zipcode.data = zipcode
+        form.distance.data = distance
+    events = event_reader(zipcode, distance)
+
 
 @app.route('/upload/<id>', methods = ['GET', 'POST'])
 @login_required

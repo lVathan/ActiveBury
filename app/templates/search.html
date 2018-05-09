@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block navbar %}
+	<div>
+		<h1> Search </h1>
+		<form class="searchform" action="" method="post">
+			{{ form.hidden_tag() }}
+			<div>
+				{{ form.zipcode.label }}:
+				{{ form.zipcode(size=24) }}<br>
+				{% for error in form.zipcode.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</div>
+			<div>
+				{{ form.distance.label }}:
+				{{ form.distance(size=1) }}<br>
+				{% for error in form.distance.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</div>
+
+			<div class="startdate">
+				{{ form.start_date.label }}:<br>
+				{{ form.start_date(size=32) }}
+
+				{% for error in form.start_date.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</div>
+
+			<div class="startdate">
+				{{ form.end_date.label }}:<br>
+				{{ form.end_date(size=32) }}
+
+				{% for error in form.end_date.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</div>
+			<p class="eventcategory">
+				{{ form.category.label }}:<br>
+				{{ form.category(size=6) }}<br>
+				{% for error in form.category.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p> {{form.submit }} </p>
+	</div>
+{%- endblock navbar %}
+
+{% block app_content %}
+
+<h3>Advanced Search</h3>
+
+<div class="events">
+	<h2> Events </h2>
+	<ul>
+		{% for event in events %}
+			{% include '_event.html' %}
+		{% endfor %}
+	</ul>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+<script type="text/javascript">
+		$(function () {
+				$('#datetimepicker1').datetimepicker();
+		});
+</script>
+{% endblock %}
