@@ -54,10 +54,19 @@ def advanced_search_reader(zipcode, radius, start_date, end_date, category):
     return Event.query\
         .filter(Event.zipcode.in_(zips))\
         .filter(Event.start_date >= start_date)\
-        .filter(Event.start_date <= end_date)\
+        .filter(Event.end_date <= end_date)\
         .filter(Event.category.in_(category))\
         .order_by(Event.start_date)
 
+
+def day_event_reader_2(zipcode, radius):
+    zips = zipsearch(zipcode, radius)
+    day1 =  Event.query\
+        .filter(Event.zipcode.in_(zips))\
+        .filter(Event.start_date >= datetime.datetime.now())\
+        .filter(Event.start_date <= end_date)\
+        .filter(Event.category.in_(category))\
+        .order_by(Event.start_date)
 
 def day_event_reader(zipcode, radius):
     days=[]
