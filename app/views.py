@@ -112,6 +112,44 @@ def add_events():
         return redirect(url_for('index'))
     return render_template('add_events.html', title='Add Events', form=form)
 
+@app.route('/duplicate_events/<id>', methods=['GET', 'POST'])
+@login_required
+def duplicate_events(id):
+    form = EventForm()
+    print("Hello")
+    print(id)
+    event = Event.query.filter_by(id=int(id)).first_or_404()
+    if form.validate_on_submit() and event.creater==current_user:
+        new_event=Event(title = form.title.data,
+            description=form.description.data,
+            start_date=form.start_date.data,
+            start_time=form.start_time.data,
+            end_date=form.end_date.data,
+            end_time=form.end_time.data,
+            address=form.address.data,
+            zipcode=form.zipcode.data,
+            category=form.category.data,
+            creater=current_user)
+        db.session.add(new_event)
+        current_user.subscribe(new_event)
+        db.session.commit()
+        flash('Your changes have been saved')
+        return redirect(url_for('index'))
+    elif request.method =='GET' and event != None:
+        form.title.data = event.title
+        form.description.data = event.description
+        form.start_date.data = event.start_date+datetime.timedelta(days=7)
+        form.start_time.data = event.start_time
+        form.end_date.data = event.end_date+datetime.timedelta(days=7)
+        form.end_time.data = event.end_time
+        form.address.data = event.address
+        form.zipcode.data = event.zipcode
+        form.category.data = event.category
+    else:
+        return redirect(url_for('event', id=id))
+
+    return render_template('add_events.html', title='Edit Event', form=form)
+
 @app.route('/event/<id>', methods=['GET', 'POST'])
 def event(id):
     user = current_user
@@ -180,19 +218,22 @@ def edit_event(id):
 
     return render_template('add_events.html', title='Edit Event', form=form)
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/advanced_search', methods=['GET', 'POST'])
 def advanced_search():
     form=AdvancedSearchForm()
+    page = request.args.get('page', 1, type=int)
     zipcode=21804
     distance=30
     start_date=datetime.datetime.now()
     end_date= start_date+ datetime.timedelta(15,0)
-    category=['general']
+    category=['general', 'sport', 'family', 'social', 'cultural']
     if form.validate_on_submit():
         zipcode = form.zipcode.data
         distance = form.distance.data
-        start_date = form.start_date.data
-        end_date = form.end_date.data
+        if form.start_date.data:
+            start_date = form.start_date.data
+        if form.end_date.data:
+            end_date = form.end_date.data
         category = form.category.data
     elif request.method == 'GET':
         form.zipcode.data = zipcode
@@ -201,8 +242,12 @@ def advanced_search():
         form.end_date.data = end_date
         form.category.data = category
     print(category)
-    events = advanced_search_reader(zipcode, distance, start_date, end_date, category)
-    return render_template('search.html', events=events, form=form)
+    events = advanced_search_reader(zipcode, distance, start_date, end_date, category, page)
+    next_url = url_for('advanced_search', page=events.next_num) \
+        if events.has_next else None
+    prev_url = url_for('advanced_search', page=events.prev_num) \
+        if events.has_prev else None
+    return render_template('search.html', events=events.items, form=form, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/login', methods =['GET', 'POST'])

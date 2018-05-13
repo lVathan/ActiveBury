@@ -24,6 +24,7 @@
 					{% if event.creater == current_user %}
 					<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
 					<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
+					<p><a href="{{ url_for('duplicate_events', id=event.id) }}">Duplicate</a></p>
 					{% elif current_user.is_subscribed(event) %}
 					<p><a href="{{ url_for('unsubscribe', id=event.id) }}">Unsubscribe</a></p>
 					{% else %}

@@ -1,7 +1,7 @@
 .user_container {
     display: grid;
-    grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr;
-    grid-template-rows: 20em 20em;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: minmax(150px, auto);
     justify-content: left;
     padding-bottom: 10vh;
 }
@@ -21,6 +21,11 @@
     grid-column-start: 1;
     grid-column-end: 1;
     padding-right: 1em;
+}
+
+.events > ul > li > a {
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .info {

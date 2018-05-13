@@ -111,5 +111,5 @@ class AdvancedSearchForm(FlaskForm):
     end_date = DateField('End Date', format="%Y-%m-%d", validators=[Optional()])
     category = MultiCheckboxField('Category', choices=[('general', 'General'),
         ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
-        ('cultural', 'Cultural')], default='general')
+        ('cultural', 'Cultural')], validators=[Optional()])
     submit = SubmitField('Search')

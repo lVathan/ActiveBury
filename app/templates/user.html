@@ -10,7 +10,7 @@
 {%block app_content %}
 	<div class="user_container">
 		<div class="image">
-			<img src="{{ user.avatar(128) }}">
+			<img src="{{ user.avatar(128)}}">
 		</div>
 		<div class="info">
 			<h2>User: {{ user.username }}</h2>
@@ -21,18 +21,18 @@
 			{% endif %}
 		</div>
 		<div class="events">
-			<h2> Upcoming Events </h2>
+			<h2> Upcoming Events: </h2>
 			<ul>
 				{% for ev in events %}
-					<li><a href={{url_for('event', id=ev.id) }}>{{ ev.title }}</a></p>
+					<li><a href={{url_for('event', id=ev.id) }}>{{ moment(ev.start_date).format('LL') }}: {{ ev.title }}</a></p>
 				{% endfor %}
 			</ul>
 		</div>
 		<div class="events">
-			<h2> Past Events </h2>
+			<h2> Past Events: </h2>
 			<ul>
 				{% for ev in past_events %}
-					<li><a href={{url_for('event', id=ev.id) }}>{{ ev.title }}</a></p>
+					<li><a href={{url_for('event', id=ev.id) }}>{{ moment(ev.start_date).format('LL') }}: {{ ev.title }}</a></p>
 				{% endfor %}
 			</ul>
 		</div>
