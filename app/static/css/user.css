@@ -12,6 +12,7 @@
     flex-direction: column;
 }
 
+
 .events {
     grid-column:3/-1;
     align-content: center;
@@ -32,6 +33,11 @@
     grid-column-start: 2;
     grid-column-end: 2;
 }
+
+.info > p {
+    max-width: 1fr;
+}
+
 
 .posts {
     grid-column: 1/3;

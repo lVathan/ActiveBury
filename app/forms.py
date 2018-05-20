@@ -13,7 +13,13 @@ from app.models import User
 from app import images
 from datetime import datetime
 
+from uszipcode import ZipcodeSearchEngine
 
+def validate_zipcode(form, field):
+    with ZipcodeSearchEngine() as search:
+        zip=search.by_zipcode(field.data)
+    if zip.City == None:
+        raise ValidationError('Field must be a US Zipcode')
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -78,7 +84,7 @@ class EventForm(FlaskForm):
     end_date = DateField('End Date', format="%Y-%m-%d", validators=[Optional()])
     end_time = TimeField('End Time', format="%H:%M", validators=[Optional()])
     address = StringField('Address', validators=[Optional()])
-    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired(), validate_zipcode])
     category = SelectField('Category', choices=[('general', 'General'),
         ('sport', 'Sports'), ('family', 'Family'), ('social', 'Social'),
         ('cultural', 'Cultural')], default='general')
@@ -92,7 +98,7 @@ class PhotoUploadForm(FlaskForm):
     submit = SubmitField('Upload')
 
 class SearchForm(FlaskForm):
-    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired(), validate_zipcode])
     distance = SelectField('Distance', choices=[('100', '100'), ('30', '30'),
         ('10', '10')], default='30')
     submit = SubmitField('Search')
@@ -103,7 +109,7 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 class AdvancedSearchForm(FlaskForm):
-    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired(), validate_zipcode])
     distance = SelectField('Distance', choices=[('100', '100'), ('30', '30'),
         ('10', '10')], default='30')
     start_date = DateField('Start Date', format="%Y-%m-%d",

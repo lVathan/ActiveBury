@@ -90,9 +90,12 @@ def day_event_reader(zipcode, radius):
     for day in range(5):
         days.append(datetime.datetime.now()+datetime.timedelta(days=day))
         next_days.append(datetime.datetime.now()+datetime.timedelta(days=day+1))
-        week_general_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
+        week_general_events[day]=Event.query\
+                .filter(Event.start_date >= days[day].date(),\
                 Event.start_date <= next_days[day].date(),\
-                 Event.category == 'general').order_by(Event.start_time).all()
+                 Event.category == 'general')\
+                 .order_by(Event.start_time)\
+                 .all()
         if week_general_events[day]:
             for ev in week_general_events[day]:
                 if ev.zipcode in zips:

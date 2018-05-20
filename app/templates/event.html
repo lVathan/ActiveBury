@@ -1,41 +1,44 @@
-
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{%block app_content %}
-	<table>
-		<tr valign="top">
-			<td>
-				{% if event.image_url %}
-					<img src="{{ event.image_url }}" style="width:30vh;height:30vh;">
-				{% endif %}
-			</td>
-			<td>
-				<h1>Event: {{ event.title }}</h1>
-				{% if event.description %}<p>Description: {{ event.description }}</p>{% endif %}
-				{% if event.start_date %}<p>Start Date: {{ event.start_date.strftime('%B %d, %Y') }}</p>{% endif %}
-				{% if event.start_time %}<p>Start Time: {{ event.start_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
-				{% if event.end_date %}<p>End Date: {{ event.end_date.strftime('%B %d, %Y') }}</p>{% endif %}
-				{% if event.end_time %}<p>End Time: {{ event.end_time.strftime('%I:%M:%S %p') }}</p>{% endif %}
-				{% if event.address %}<p>Address: {{ event.address }} </p>{% endif %}
-				{% if event.zipcode %}<p>Zipcode: {{ event.zipcode }} </p>{% endif %}
-				{% if event.category %}<p>Category: {{ event.category }} </p>{% endif %}
-				{% if current_user.is_authenticated %}
-					{% if event.creater == current_user %}
-					<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
-					<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
-					<p><a href="{{ url_for('duplicate_events', id=event.id) }}">Duplicate</a></p>
-					{% elif current_user.is_subscribed(event) %}
-					<p><a href="{{ url_for('unsubscribe', id=event.id) }}">Unsubscribe</a></p>
-					{% else %}
-					<p><a href="{{ url_for('subscribe', id=event.id) }}">Subscribe</a></p>
-					{% endif %}
-				{% endif %}
-				<p>{{ event.subscribers.count() }} subscribers</p>
-			</td>
-		</tr>
-	</table><br>
+{% block styles %}
+{{ super() }}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/event.css') }}">
+{% endblock %}
 
+{% block app_content %}
+
+<h1>{{ event.title }}</h1>
+
+<span> <b>Subscribers: {{ event.subscribers.count() }}</b> </span>
+<div class="event_container">
+	<div class="image">
+		{% if event.image_url %}
+			<img src="{{ event.image_url }}" style="width:30vh;height:30vh;">
+		{% endif %}
+	</div>
+	<div>
+			{% if event.description %}<p><b>Description:</b> {{ event.description }}</p>{% endif %}
+			{% if event.start_date %}<span>Start Date: {{ event.start_date.strftime('%B %d, %Y') }}</span>{% endif %}
+			{% if event.start_time %}<span>Start Time: {{ event.start_time.strftime('%I:%M:%S %p') }}</span>{% endif %}
+			{% if event.end_date %}<span>End Date: {{ event.end_date.strftime('%B %d, %Y') }}</span>{% endif %}
+			{% if event.end_time %}<span>End Time: {{ event.end_time.strftime('%I:%M:%S %p') }}</span>{% endif %}
+			{% if event.address %}<span>Address: {{ event.address }} </span>{% endif %}
+			{% if event.zipcode %}<span>Zipcode: {{ event.zipcode }} </span>{% endif %}
+			{% if event.category %}<span>Category: {{ event.category }} </span>{% endif %}
+			{% if current_user.is_authenticated %}
+				{% if event.creater == current_user %}
+				<p><a href="{{ url_for('edit_event', id=event.id) }}">Edit</a></p>
+				<p><a href="{{ url_for('upload', id=event.id) }}">Upload a picture!</a></p>
+				<p><a href="{{ url_for('duplicate_events', id=event.id) }}">Duplicate</a></p>
+				{% elif current_user.is_subscribed(event) %}
+				<p><a href="{{ url_for('unsubscribe', id=event.id) }}">Unsubscribe</a></p>
+				{% else %}
+				<p><a href="{{ url_for('subscribe', id=event.id) }}">Subscribe</a></p>
+				{% endif %}
+			{% endif %}
+	</div>
+</div>
 	{% if form %}
 	<form action="" method="post">
 		{{ form.hidden_tag() }}
