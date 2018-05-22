@@ -57,7 +57,7 @@ def advanced_search_reader(zipcode, radius, start_date, end_date, category, page
         .filter(Event.end_date <= end_date)\
         .filter(Event.category.in_(category))\
         .order_by(Event.start_date)\
-        .paginate(page, 3, False)
+        .paginate(page, 15, False)
 
 
 def day_event_reader_2(zipcode, radius):
@@ -92,7 +92,7 @@ def day_event_reader(zipcode, radius):
         next_days.append(datetime.datetime.now()+datetime.timedelta(days=day+1))
         week_general_events[day]=Event.query\
                 .filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
+                Event.start_date < next_days[day].date(),\
                  Event.category == 'general')\
                  .order_by(Event.start_time)\
                  .all()
@@ -103,32 +103,34 @@ def day_event_reader(zipcode, radius):
 
 
         week_sport_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
+                Event.start_date < next_days[day].date(),\
                  Event.category == 'sport').order_by(Event.start_time).all()
         for ev in week_sport_events[day]:
             if ev.zipcode in zips:
                 week_sport_events_local[day].append(ev)
 
         week_family_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
+                Event.start_date < next_days[day].date(),\
                  Event.category == 'family').order_by(Event.start_time).all()
         for ev in week_family_events[day]:
             if ev.zipcode in zips:
                 week_family_events_local[day].append(ev)
 
         week_social_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
+                Event.start_date < next_days[day].date(),\
                  Event.category == 'social').order_by(Event.start_time).all()
         for ev in week_social_events[day]:
             if ev.zipcode in zips:
                 week_social_events_local[day].append(ev)
 
         week_cultural_events[day]=Event.query.filter(Event.start_date >= days[day].date(),\
-                Event.start_date <= next_days[day].date(),\
+                Event.start_date < next_days[day].date(),\
                  Event.category == 'cultural').order_by(Event.start_time).all()
         for ev in week_cultural_events[day]:
             if ev.zipcode in zips:
                 week_cultural_events_local[day].append(ev)
+
+    print(days[1].date())
     return week_general_events_local,\
             week_sport_events_local,\
             week_family_events_local,\
