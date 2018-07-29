@@ -19,6 +19,13 @@
 	</div>
 	<div>
 			{% if event.description %}<p><b>Description:</b> {{ event.description }}</p>{% endif %}
+			{% if event.hyperlink %}
+				{% if event.hyperlink[0:4]=='http' %}
+					<span>Link: <a href={{ event.hyperlink }}>{{ event.hyperlink }}</a></span>
+				{% else %}
+					<span>Link: <a href=http://{{ event.hyperlink }}>{{ event.hyperlink }}</a></span>
+				{% endif %}
+			{% endif %}
 			{% if event.start_date %}<span>Start Date: {{ event.start_date.strftime('%B %d, %Y') }}</span>{% endif %}
 			{% if event.start_time %}<span>Start Time: {{ event.start_time.strftime('%I:%M:%S %p') }}</span>{% endif %}
 			{% if event.end_date %}<span>End Date: {{ event.end_date.strftime('%B %d, %Y') }}</span>{% endif %}

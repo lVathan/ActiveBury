@@ -37,6 +37,15 @@
 			<span style="color: red;">[{{ error }}]</span>
 			{% endfor %}
 		</p>
+
+		<p class="eventlink">
+			{{ form.hyperlink.label }}:<br>
+			{{ form.hyperlink(size=32) }}<br>
+			{% for error in form.hyperlink.errors %}
+			<span style="color: red;">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+
 		<p class="startdate">
 			{{ form.start_date.label }}:<br>
 			{{ form.start_date(size=32) }}

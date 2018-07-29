@@ -42,6 +42,7 @@ def before_request():
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    print(current_user)
     zipcode=21804
     distance=100
     if current_user.is_authenticated:
@@ -56,7 +57,6 @@ def index():
         form.zipcode.data = zipcode
         form.distance.data = distance
     zip = zip_info(zipcode)
-    print(distance)
     events=[]
     events = day_event_reader(zipcode, distance)
     week_general_events=events[0]
@@ -116,12 +116,11 @@ def add_events():
 @login_required
 def duplicate_events(id):
     form = EventForm()
-    print("Hello")
-    print(id)
     event = Event.query.filter_by(id=int(id)).first_or_404()
     if form.validate_on_submit() and event.creater==current_user:
         new_event=Event(title = form.title.data,
             description=form.description.data,
+            hyperlink=form.hyperlink.data,
             start_date=form.start_date.data,
             start_time=form.start_time.data,
             end_date=form.end_date.data,
@@ -134,13 +133,15 @@ def duplicate_events(id):
         current_user.subscribe(new_event)
         db.session.commit()
         flash('Your changes have been saved')
-        return redirect(url_for('index'))
+        return redirect(url_for('calendar'))
     elif request.method =='GET' and event != None:
         form.title.data = event.title
         form.description.data = event.description
+        form.hyperlink.data = event.hyperlink
         form.start_date.data = event.start_date+datetime.timedelta(days=7)
         form.start_time.data = event.start_time
-        form.end_date.data = event.end_date+datetime.timedelta(days=7)
+        if event.end_date:
+            form.end_date.data = event.end_date+datetime.timedelta(days=7)
         form.end_time.data = event.end_time
         form.address.data = event.address
         form.zipcode.data = event.zipcode
@@ -187,6 +188,8 @@ def edit_event(id):
         event.title = form.title.data
         event.description=form.description.data
         event.start_date=form.start_date.data
+        if form.hyperlink.data:
+            event.hyperlink=form.hyperlink.data
         if form.start_time.data:
             event.start_time=form.start_time.data
         if form.end_date.data:
@@ -199,13 +202,13 @@ def edit_event(id):
             event.zipcode=form.zipcode.data
         if form.category.data:
             event.category=form.category.data
-        print(event.id)
         db.session.commit()
         flash('Your changes have been saved')
         return redirect(url_for('event', id=id))
     elif request.method =='GET':
         form.title.data = event.title
         form.description.data = event.description
+        form.hyperlink.data = event.hyperlink
         form.start_date.data = event.start_date
         form.start_time.data = event.start_time
         form.end_date.data = event.start_date
@@ -241,7 +244,6 @@ def advanced_search():
         form.start_date.data = start_date
         form.end_date.data = end_date
         form.category.data = category
-    print(category)
     events = advanced_search_reader(zipcode, distance, start_date, end_date, category, page)
     next_url = url_for('advanced_search', page=events.next_num) \
         if events.has_next else None
@@ -432,7 +434,6 @@ def calendar():
     elif request.method =='GET':
         form.zipcode.data = zipcode
         form.distance.data = distance
-    print(zipcode)
     return render_template('calendar.html', form=form, zipcode=zipcode, distance=distance)
 
 @app.route('/list', methods = ['GET', 'POST'])

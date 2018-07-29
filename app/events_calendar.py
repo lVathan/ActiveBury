@@ -40,7 +40,7 @@ def event_reader(zipcode, radius):
             elif e.category == "family":
                 color = "lightyellow"
             elif e.category == "social":
-                color = "lighcoral"
+                color = "lightcoral"
             elif e.category == "cultural":
                 color = "lightsalmon"
             else:

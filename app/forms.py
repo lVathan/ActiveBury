@@ -77,6 +77,7 @@ class EditProfileForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[Length(min=1, max=240)])
+    hyperlink = StringField('Link', validators=[Length(min=1, max=240), Optional()])
     start_date = DateField('Start Date', format="%Y-%m-%d",
                 default=datetime.today, validators=[DataRequired()])
     start_time = TimeField('Start Time', format="%H:%M",

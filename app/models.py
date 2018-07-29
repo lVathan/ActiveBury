@@ -23,7 +23,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     events = db.relationship('Event', backref='creater', lazy='dynamic')
-    about_me = db.Column(db.String(140))
+    about_me = db.Column(db.String(580))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     last_search = db.Column(db.Integer, default=21804)
     subscribed = db.relationship('Event', secondary=subscriptions,
@@ -115,7 +115,7 @@ class Post(db.Model):
 class Event(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(140))
-    description = db.Column(db.String(240))
+    description = db.Column(db.String(1080))
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     start_time = db.Column(db.Time)
@@ -124,6 +124,7 @@ class Event(db.Model):
     address = db.Column(db.String(140))
     zipcode = db.Column(db.Integer)
     category = db.Column(db.String(64))
+    hyperlink = db.Column(db.String(240))
     posts = db.relationship('Post', backref='topic', lazy='dynamic')
     image_url = db.Column(db.String(140), default=None, nullable=True)
     image_filename = db.Column(db.String(140), default=None, nullable=True)

@@ -11,7 +11,7 @@
       <a href="{{ url_for('event', id=event.id) }}">
         {{ event.title }}
       </a>
-      occurs {{ moment(event.start_date).fromNow() }}:
+      occurs on {{ event.start_date.strftime('%A %B %e') }}, at {{ event.start_time.strftime('%I:%M %p') }}:
       <br>
       {{ event.description }}
     </td>
