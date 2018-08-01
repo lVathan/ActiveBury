@@ -27,8 +27,6 @@ def event_reader(zipcode, radius):
     events= []
     events2 = Event.query.all()
     zips = zipsearch(zipcode, radius)
-    print(zipcode)
-    #print(radius)
     for e in events2:
         if e.zipcode in zips:
             color="blue"
@@ -130,7 +128,6 @@ def day_event_reader(zipcode, radius):
             if ev.zipcode in zips:
                 week_cultural_events_local[day].append(ev)
 
-    print(days[1].date())
     return week_general_events_local,\
             week_sport_events_local,\
             week_family_events_local,\

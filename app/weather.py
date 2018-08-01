@@ -51,5 +51,4 @@ def weather_search():
     key = weather_api
     url = 'http://api.openweathermap.org/data/2.5/forecast?id=4373554&APPID=' + key
     json_obj = urllib.request.urlopen(url)
-    print(json_obj.read())
     data = json.load(json_obj)

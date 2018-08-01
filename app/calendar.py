@@ -14,4 +14,3 @@ def event_reader():
     return events
 
 events = event_reader()
-print(events)
