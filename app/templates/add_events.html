@@ -32,7 +32,7 @@
 		</p>
 		<p class="eventdescription">
 			{{ form.description.label }}:<br>
-			{{ form.description(size=32) }}<br>
+			{{ form.description(cols="40", rows="5"|safe) }}<br>
 			{% for error in form.description.errors %}
 			<span style="color: red;">[{{ error }}]</span>
 			{% endfor %}
